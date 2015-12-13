@@ -18,7 +18,7 @@ class Interval(object):
         start=[self.leftendpoint,self.rightendpoint]
         print(start)
   
-
+    
     def __add__(self,other):
         """
         This function is used fot addition on two intervals
@@ -29,6 +29,7 @@ class Interval(object):
         add.append(p1+p2)
         add.append(q1+q2)
         return add      
+        
     
     def __sub__(self,other):
         """
@@ -74,15 +75,22 @@ class Interval(object):
        
     def __iadd__(self, other):
         iadd=[]
-        self.leftendpoint += other.e
-        print(self.leftendpoint)
-        self.rightendpoint += other.e
+        self.leftendpoint += other.rightendpoint
+        self.rightendpoint += other.leftendpoint
         iadd.append(self.rightendpoint)
         iadd.append(self.leftendpoint)
         return iadd    
 
-        
-    
+    def __pow__(self, other):
+        if n%2==0 and n>0:#even
+            print("s")
+        else:
+            if self.rightendpoint>a or self.rightendpoint==a:
+            elif self.leftendpoint<0:
+            else:    
+            pow(self.leftendpoint,n)
+            pow(self.rightendpoint,n)
+   
 I1 = Interval(1,2) # [1, 2]
 I2 = Interval(3, 4) # [3, 4]
 print("Reslults:")
@@ -95,10 +103,15 @@ print(I5)
 I6=I1 / I2 # [0.25,0.6666666666666666]
 print(I6)
 
-
-#I7=Interval(2,3) + 1 # [3, 4]
-#print(I7)
 """
+I7=Interval(2,3) + 1 # [3, 4]
+#print(I7)
 1 + Interval(2,3) # [3, 4]
 1.0 + Interval(2,3) # [3.0, 4.0]
 """  
+"""
+x = Interval(-2,2) # [-2, 2]
+x**2 # [0, 4]
+x**3 # [-8, 8]
+"""
+
