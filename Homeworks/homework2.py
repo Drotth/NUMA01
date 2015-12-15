@@ -25,27 +25,28 @@ class Interval(object):
         start = [self.leftendpoint, self.rightendpoint]
         print(start)
 
-    def __add__(self, other):
+    def __add__(self,other):
         """
         This function is used fot addition on two intervals
         """
-        
-        add=[]  
+        add=[] 
         if not isinstance(other, Interval):
             p1, q1 = self.leftendpoint,self.rightendpoint
             add.append(p1+other)
-            add.append(q1+other)            
-        elif not isinstance(self,Interval):
-            p2, q2 = other.leftendpoint,other.rightendpoint
-            add.append(p2+other)
-            add.append(q2+other)       
+            add.append(q1+other)                 
         else:
             p1, q1 = self.leftendpoint,self.rightendpoint
             p2, q2 = other.leftendpoint,other.rightendpoint
             add.append(p1+p2)
             add.append(q1+q2)
-        return add  
-
+        return add      
+                
+    def __radd__(self, other):
+        """
+        Reverses the role of self and other
+        """
+        return self + other
+         
     def __sub__(self, other):
         """
         This function is used for subtraction on two intervals
@@ -171,12 +172,12 @@ if __name__ == '__main__':
     Isingle2 = Interval(2)
 
     print("-----------------------------TASK 7-------------------------------")
-    """
-    I7=Interval(2,3) + 1 # [3, 4]
-    #print(I7)
-    1 + Interval(2,3) # [3, 4]
-    1.0 + Interval(2,3) # [3.0, 4.0]
-    """
+    
+    print(Interval(2,3) + 1) # [3, 4]
+    
+    print(1 + Interval(2,3)) # [3, 4]
+    print(1.0 + Interval(2,3)) # [3.0, 4.0]
+    
 
     print("-----------------------------TASK 9-------------------------------")
     x = Interval(-2, 2)  # [-2, 2]
