@@ -70,6 +70,8 @@ class Interval(object):
         div = []
         p1, q1 = self.leftendpoint, self.rightendpoint
         p2, q2 = other.leftendpoint, other.rightendpoint
+        if (p2 == 0 or q2 == 0):
+            raise ZeroDivisionError("You tried to divide by zero!")
         ac = operator.__truediv__(p1, p2)
         ad = operator.__truediv__(p1, q2)
         bc = operator.__truediv__(q1, p2)
@@ -140,18 +142,29 @@ class Interval(object):
         show()
 
 if __name__ == '__main__':
+    print("-----------------------------TASK 3-------------------------------")
     I1 = Interval(1, 2)  # [1, 2]
     I2 = Interval(3, 4)  # [3, 4]
-    print("Results:")
-    I3 = I1 + I2  # [4, 6]
-    print(I3)
-    I4 = I1 - I2  # [-3, -1]
-    print(I4)
-    I5 = I1 * I2  # [3, 8]
-    print(I5)
-    I6 = I1 / I2  # [0.25,0.6666666666666666]
-    print(I6)
 
+    print("-----------------------------TASK 4-------------------------------")
+    I3 = I1 + I2  # [4, 6]
+    print("I1 + I2 =", I3)
+    I4 = I1 - I2  # [-3, -1]
+    print("I1 - I2 =", I4)
+    I5 = I1 * I2  # [3, 8]
+    print("I1 * I2 =", I5)
+    I6 = I1 / I2  # [0.25,0.6666666666666666]
+    print("I1 / I2 =", I6)
+
+    print("-----------------------------TASK 5-------------------------------")
+    Ivalid = Interval(4, 1)
+    Izero = Interval(3, 2)  # Change anyone to 0 for test!
+    Iresult = Ivalid / Izero
+    print("Iresult =", Iresult)
+
+    print("-----------------------------TASK 6-------------------------------")
+
+    print("-----------------------------TASK 7-------------------------------")
     """
     I7=Interval(2,3) + 1 # [3, 4]
     #print(I7)
@@ -159,6 +172,7 @@ if __name__ == '__main__':
     1.0 + Interval(2,3) # [3.0, 4.0]
     """
 
+    print("-----------------------------TASK 9-------------------------------")
     x = Interval(-2, 2)  # [-2, 2]
     print(x**2)  # [0, 4]
     print(x**3)  # [-8, 8]
