@@ -116,13 +116,20 @@ class Interval(object):
 
         return powe
 
-    def __contains__(self):
+    def __contains__(self, value):
         if not isinstance(
              self.leftendpoint, int) or isinstance(self.leftendpoint, float):
             raise TypeError('Left endpoint is not real value')
         if not isinstance(
              self.rightendpoint, int) or isinstance(self.rightendpoint, float):
             raise TypeError('Right endppoint is not real balue')
+
+        if (self.leftendpoint > self.rightendpoint):
+            if (value <= self.leftendpoint and value >= self.rightendpoint):
+                return True
+        else:
+            if (value <= self.rightendpoint and value >= self.leftendpoint):
+                return True
 
     def plot_values():
         """
@@ -172,12 +179,17 @@ if __name__ == '__main__':
     Isingle2 = Interval(2)
 
     print("-----------------------------TASK 7-------------------------------")
-    
-    print(Interval(2,3) + 1) # [3, 4]
-    
-    print(1 + Interval(2,3)) # [3, 4]
-    print(1.0 + Interval(2,3)) # [3.0, 4.0]
-    
+    print(Interval(2, 3) + 1)  # [3, 4]
+    print(1 + Interval(2, 3))  # [3, 4]
+    print(1.0 + Interval(2, 3))  # [3.0, 4.0]
+
+    print("-----------------------------TASK 8-------------------------------")
+    x = Interval(1, 5)
+    print(x.__contains__(2))
+    if 2 in x:
+        print(True)
+    else:
+        print(False)
 
     print("-----------------------------TASK 9-------------------------------")
     x = Interval(-2, 2)  # [-2, 2]
