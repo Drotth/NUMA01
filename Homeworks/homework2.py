@@ -25,31 +25,31 @@ class Interval(object):
         start = [self.leftendpoint, self.rightendpoint]
         print(start)
 
-    def __add__(self,other):
+    def __add__(self, other):
         """
-        This function is used fot addition on two intervals
+        This function is used for addition of two intervals
         """
-        add=[] 
+        add = []
         if not isinstance(other, Interval):
-            p1, q1 = self.leftendpoint,self.rightendpoint
+            p1, q1 = self.leftendpoint, self.rightendpoint
             add.append(p1+other)
-            add.append(q1+other)                 
+            add.append(q1+other)
         else:
-            p1, q1 = self.leftendpoint,self.rightendpoint
-            p2, q2 = other.leftendpoint,other.rightendpoint
+            p1, q1 = self.leftendpoint, self.rightendpoint
+            p2, q2 = other.leftendpoint, other.rightendpoint
             add.append(p1+p2)
             add.append(q1+q2)
-        return add      
-                
+        return add
+
     def __radd__(self, other):
         """
         Reverses the role of self and other
         """
         return self + other
-         
+
     def __sub__(self, other):
         """
-        This function is used for subtraction on two intervals
+        This function is used for subtraction of two intervals
         """
 
         sub = []
@@ -61,7 +61,7 @@ class Interval(object):
 
     def __mul__(self, other):
         """
-        This function is used for multiplication on two intervals
+        This function is used for multiplication of two intervals
         """
 
         mult = []
@@ -77,7 +77,7 @@ class Interval(object):
 
     def __truediv__(self, other):
         """
-        This function is used for division on two intervals
+        This function is used for division of two intervals
         """
 
         div = []
@@ -95,7 +95,7 @@ class Interval(object):
 
     def __pow__(self, other):
         """
-        This function is used for the power of
+        This function is used for power of on a interval
         """
 
         powe = []
@@ -117,6 +117,11 @@ class Interval(object):
         return powe
 
     def __contains__(self, value):
+        """
+        This function is used to check whether a specified value is within
+        the interval
+        """
+        
         if not isinstance(
              self.leftendpoint, int) or isinstance(self.leftendpoint, float):
             raise TypeError('Left endpoint is not real value')
@@ -133,7 +138,7 @@ class Interval(object):
 
     def plot_values():
         """
-        Evaluate the polynomial p(x)=3x^3−2x^2+5x−1
+        Evaluates the polynomial p(x)=3x^3−2x^2+5x−1
         Plots lower boundaries and upper boundaries for y with respect to
         lower boundaries of x
         """
