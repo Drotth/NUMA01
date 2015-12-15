@@ -13,7 +13,7 @@ class Interval(object):
     def __init__(self, leftendpoint, rightendpoint=None):
         """
         Init (initialize) function is the first function called when an object
-        is created.
+        is created. This is also called constructor.
         Self represent the instance of the object itself
         """
 
@@ -91,6 +91,9 @@ class Interval(object):
         bd = operator.__truediv__(q1, q2)
         div.append(min(ac, ad, bc, bd))
         div.append(max(ac, ad, bc, bd))
+        for i in np.isfinite(div):
+            if i != True:
+                raise Exception('Is infinity')
         return div
 
     def __pow__(self, other):
@@ -127,7 +130,7 @@ class Interval(object):
             raise TypeError('Left endpoint is not real value')
         if not isinstance(
              self.rightendpoint, int) or isinstance(self.rightendpoint, float):
-            raise TypeError('Right endppoint is not real balue')
+            raise TypeError('Right endppoint is not real value')
 
         if (self.leftendpoint > self.rightendpoint):
             if (value <= self.leftendpoint and value >= self.rightendpoint):
