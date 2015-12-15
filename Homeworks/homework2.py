@@ -10,7 +10,7 @@ import operator
 
 
 class Interval(object):
-    def __init__(self, leftendpoint, rightendpoint):
+    def __init__(self, leftendpoint, rightendpoint=None):
         """
         Init (initialize) function is the first function called when an object
         is created.
@@ -18,7 +18,10 @@ class Interval(object):
         """
 
         self.leftendpoint = leftendpoint
-        self.rightendpoint = rightendpoint
+        if rightendpoint is not None:
+            self.rightendpoint = rightendpoint
+        else:
+            self.rightendpoint = leftendpoint
         start = [self.leftendpoint, self.rightendpoint]
         print(start)
 
@@ -163,6 +166,8 @@ if __name__ == '__main__':
     print("Iresult =", Iresult)
 
     print("-----------------------------TASK 6-------------------------------")
+    Isingle1 = Interval(1)
+    Isingle2 = Interval(2)
 
     print("-----------------------------TASK 7-------------------------------")
     """
