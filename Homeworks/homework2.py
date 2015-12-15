@@ -196,9 +196,5 @@ if __name__ == '__main__':
     print(x**2)  # [0, 4]
     print(x**3)  # [-8, 8]
 
-    """
-    I9 = Interval(1j,3)
-    I9.__contains__()
-    """
-
+    print("-----------------------------TASK 10------------------------------")
     Interval.plot_values()
