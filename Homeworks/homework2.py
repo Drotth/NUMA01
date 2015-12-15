@@ -29,13 +29,22 @@ class Interval(object):
         """
         This function is used fot addition on two intervals
         """
-
-        add = []
-        p1, q1 = self.leftendpoint, self.rightendpoint
-        p2, q2 = other.leftendpoint, other.rightendpoint
-        add.append(p1+p2)
-        add.append(q1+q2)
-        return add
+        
+        add=[]  
+        if not isinstance(other, Interval):
+            p1, q1 = self.leftendpoint,self.rightendpoint
+            add.append(p1+other)
+            add.append(q1+other)            
+        elif not isinstance(self,Interval):
+            p2, q2 = other.leftendpoint,other.rightendpoint
+            add.append(p2+other)
+            add.append(q2+other)       
+        else:
+            p1, q1 = self.leftendpoint,self.rightendpoint
+            p2, q2 = other.leftendpoint,other.rightendpoint
+            add.append(p1+p2)
+            add.append(q1+q2)
+        return add  
 
     def __sub__(self, other):
         """
@@ -82,14 +91,6 @@ class Interval(object):
         div.append(min(ac, ad, bc, bd))
         div.append(max(ac, ad, bc, bd))
         return div
-
-    def __iadd__(self, other):
-        iadd = []
-        self.leftendpoint += other
-        self.rightendpoint += other
-        iadd.append(self.rightendpoint)
-        iadd.append(self.leftendpoint)
-        return iadd
 
     def __pow__(self, other):
         """
