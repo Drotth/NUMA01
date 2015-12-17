@@ -171,13 +171,15 @@ class Interval(object):
         """
         yl = []
         yu = []
-        xl = linspace(0., 1, 10)
-        xu = linspace(0., 1, 10)+0.5
+        xl = linspace(0., 1, 1000)
+        xu = linspace(0., 1, 1000)+0.5
    
         list_of_interval=[]
         for l, u in list(zip(xl, xu)):
             list_of_interval.append(Interval(l,u))
-         
+            
+        #print(len(list_of_interval))  
+            
         total=[] 
         for f in list_of_interval:
             x=f
