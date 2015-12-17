@@ -17,13 +17,21 @@ class Interval(object):
         Self represent the instance of the object itself
         """
 
-        self.leftendpoint = leftendpoint
-        if rightendpoint is not None:
+        if rightendpoint is None:
+            self.rightendpoint = leftendpoint
+            self.leftendpoint = leftendpoint
+
+        elif (rightendpoint > leftendpoint):
+            self.leftendpoint = leftendpoint
             self.rightendpoint = rightendpoint
         else:
+            self.leftendpoint = rightendpoint
             self.rightendpoint = leftendpoint
         start = [self.leftendpoint, self.rightendpoint]
         print(start)
+
+    def __repr__(self):
+        return "[%s,%s]" % (self.leftendpoint, self.rightendpoint)
 
     def __add__(self, other):
         """
@@ -39,7 +47,7 @@ class Interval(object):
             p2, q2 = other.leftendpoint, other.rightendpoint
             add.append(p1+p2)
             add.append(q1+q2)
-        return add
+        return Interval(add[0], add[1])
 
     def __radd__(self, other):
         """
@@ -57,7 +65,7 @@ class Interval(object):
         p2, q2 = other.leftendpoint, other.rightendpoint
         sub.append(p1-q2)
         sub.append(q1-p2)
-        return sub
+        return Interval(sub[0], sub[1])
 
     def __mul__(self, other):
         """
@@ -73,7 +81,7 @@ class Interval(object):
         bd = q1*q2
         mult.append(min(ac, ad, bc, bd))
         mult.append(max(ac, ad, bc, bd))
-        return mult
+        return Interval(mult[0], mult[1])
 
     def __truediv__(self, other):
         """
@@ -83,7 +91,7 @@ class Interval(object):
         div = []
         p1, q1 = self.leftendpoint, self.rightendpoint
         p2, q2 = other.leftendpoint, other.rightendpoint
-        if (p2 == 0 or q2 == 0):
+        if (0 >= p2 and 0 <= q2):
             raise ZeroDivisionError("You tried to divide by zero!")
         ac = operator.__truediv__(p1, p2)
         ad = operator.__truediv__(p1, q2)
@@ -94,7 +102,7 @@ class Interval(object):
         for i in np.isfinite(div):
             if i != True:
                 raise Exception('Is infinity')
-        return div
+        return Interval(div[0], div[1])
 
     def __pow__(self, other):
         """
@@ -117,14 +125,14 @@ class Interval(object):
             powe.append(self.leftendpoint**other)
             powe.append(self.rightendpoint**other)
 
-        return powe
+        return Interval(powe[0], powe[1])
 
     def __contains__(self, value):
         """
         This function is used to check whether a specified value is within
         the interval
         """
-        
+
         if not isinstance(
              self.leftendpoint, int) or isinstance(self.leftendpoint, float):
             raise TypeError('Left endpoint is not real value')
@@ -132,12 +140,10 @@ class Interval(object):
              self.rightendpoint, int) or isinstance(self.rightendpoint, float):
             raise TypeError('Right endppoint is not real value')
 
-        if (self.leftendpoint > self.rightendpoint):
-            if (value <= self.leftendpoint and value >= self.rightendpoint):
-                return True
+        if (value <= self.rightendpoint and value >= self.leftendpoint):
+            return True
         else:
-            if (value <= self.rightendpoint and value >= self.leftendpoint):
-                return True
+            return False
 
     def plot_values():
         """
@@ -193,7 +199,7 @@ if __name__ == '__main__':
 
     print("-----------------------------TASK 8-------------------------------")
     x = Interval(1, 5)
-    print(x.__contains__(2))
+    print(x.__contains__(6))
     if 2 in x:
         print(True)
     else:
