@@ -27,10 +27,12 @@ class Interval(object):
         else:
             self.leftendpoint = rightendpoint
             self.rightendpoint = leftendpoint
-        start = [self.leftendpoint, self.rightendpoint]
-        print(start)
+
 
     def __repr__(self):
+        """
+        This function is used for print out an interval project
+        """
         return "[%s,%s]" % (self.leftendpoint, self.rightendpoint)
 
     def __add__(self, other):
@@ -49,11 +51,7 @@ class Interval(object):
             add.append(q1+q2)
         return Interval(add[0], add[1])
 
-    def __radd__(self, other):
-        """
-        Reverses the role of self and other
-        """
-        return self + other
+
 
     def __sub__(self, other):
         """
@@ -71,17 +69,19 @@ class Interval(object):
         """
         This function is used for multiplication of two intervals
         """
-
         mult = []
-        p1, q1 = self.leftendpoint, self.rightendpoint
-        p2, q2 = other.leftendpoint, other.rightendpoint
-        ac = p1*p2
-        ad = p1*q2
-        bc = p2*q1
-        bd = q1*q2
-        mult.append(min(ac, ad, bc, bd))
-        mult.append(max(ac, ad, bc, bd))
-        return Interval(mult[0], mult[1])
+        if not isinstance(other, Interval):
+            return Interval(self.leftendpoint*other,self.rightendpoint*other)            
+        else:    
+            p1, q1 = self.leftendpoint, self.rightendpoint
+            p2, q2 = other.leftendpoint, other.rightendpoint
+            ac = p1*p2
+            ad = p1*q2
+            bc = p2*q1
+            bd = q1*q2
+            mult.append(min(ac, ad, bc, bd))
+            mult.append(max(ac, ad, bc, bd))
+            return Interval(mult[0], mult[1])
 
     def __truediv__(self, other):
         """
@@ -127,6 +127,20 @@ class Interval(object):
 
         return Interval(powe[0], powe[1])
 
+    def __radd__(self, other):
+        """
+        Reverses the role of self and other
+        """
+        return self + other
+        
+        
+    def __rmul__(self, other):
+        """
+        Reverses the role of self and other when multiplication is used
+        """
+        return self * other    
+        
+        
     def __contains__(self, value):
         """
         This function is used to check whether a specified value is within
@@ -151,22 +165,44 @@ class Interval(object):
         Plots lower boundaries and upper boundaries for y with respect to
         lower boundaries of x
         """
-
+        
+        """
+        Implementation 1
+        """
         yl = []
         yu = []
         xl = linspace(0., 1, 1000)
-        xu = linspace(0., 1, 1000) + 0.5
-        p = [3, -2, 5, -1]
-        yl = np.polyval(p, xl)
-        yu = np.polyval(p, xu)
+        xu = linspace(0., 1, 1000)+0.5
+   
+        list_of_interval=[]
+        for l, u in list(zip(xl, xu)):
+            list_of_interval.append(Interval(l,u))
+            
+        #print(len(list_of_interval))  
+            
+        total=[] 
+        for f in list_of_interval:
+            x=f
+            p1=3*(x**3)
+            p2=-2*(x**2)
+            p3=5*x
+            p4=-1
+            #p=3*x**3-2*x**2+5*x-1
+            total.append(p1+p2+p3+p4)
+        
+        
+        for k in total:
+            yl.append(k.leftendpoint)
+            yu.append(k.rightendpoint)
+        
+ 
         plot(xl, yl, label='yl')
-        plot(xl, yu, label='yu')
-        xlabel('xl')
-        ylabel('y')
-        title("Graph")
+        plot(xl, yu, label='yu') 
+        
         legend()
         show()
-
+        
+        
 if __name__ == '__main__':
     print("-----------------------------TASK 3-------------------------------")
     I1 = Interval(1, 2)  # [1, 2]
