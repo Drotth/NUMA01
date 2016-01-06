@@ -22,10 +22,12 @@ def read_file():
         # Lägger till a och b som datetimeobjects i listG
         listG.append(datetime.strptime(a + " " + b, frmt))
 
+    return listG
+
 # --------------------- TASK 2 ------------------------------------------------
 
 
-def convert_local_timezone():
+def convert_local_timezone(listG):
     newList = []
 
     for date in listG:  # Variabeln date går igenom förra listan (listG)
@@ -33,3 +35,10 @@ def convert_local_timezone():
         # Variabeln date överförs till den lokala tidszonen
         local_time = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
         newList.append(local_time)  # Lägger till nya tider i den nya listan
+
+    return newList
+
+if __name__ == '__main__':
+    listG = read_file()
+    newList = convert_local_timezone(listG)
+    print(newList.pop())
