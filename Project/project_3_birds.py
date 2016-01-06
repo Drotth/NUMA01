@@ -12,7 +12,7 @@ import pytz
 
 
 def read_file():
-    file = open("birds.txt", "r")  # Öppnar filen birds
+    file = open("birds_test.txt", "r")  # Öppnar filen birds
     listG = []
 
     for line in file:  # En for-loop som går igenom birds.txt
@@ -38,7 +38,15 @@ def convert_local_timezone(listG):
 
     return newList
 
+# --------------------- TASK 3 ------------------------------------------------
+
+
+def list_preprocessing():
+    print("preproc")
+
 if __name__ == '__main__':
     listG = read_file()
     newList = convert_local_timezone(listG)
-    print(newList.pop())
+    list_preprocessing()
+    for obj in newList:
+        print(obj)
