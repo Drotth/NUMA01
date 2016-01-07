@@ -49,6 +49,8 @@ def preprocessing():
 
 def compute_data():
     print("compute data")    
+    input_example = input('Enter your name: ')
+    print('Hello', input_example)
 
 # --------------------- TASK 5 ------------------------------------------------
 
