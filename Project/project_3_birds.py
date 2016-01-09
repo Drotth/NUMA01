@@ -12,8 +12,8 @@ import pytz
 list_date = []
 newList = []
 list_data = []
-list_all = []
 new_list_data=[]
+new_list_date=[]
 # --------------------- TASK 1 ------------------------------------------------
 
 
@@ -56,14 +56,17 @@ def compute_data():
     days = input('Number of days: ')
     interval = input('Interval [0=mins, 1=hours, 2=days, 3=weeks]: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
-
+    
+    
     set_date(start_date)
-    for t in range(int(days)):
-       end_date = date_1 + timedelta(int(t)+1) 
-       print("End",str(end_date))
-       a,b = str(end_date).split()
-       #start_date=str(datetime.strptime(str(end_date), "%Y-%m-%d"))
-       set_date(a)
+    
+    if int(days)>1:
+       for t in range(1,int(days)):
+           end_date = date_1 + timedelta(int(t)) 
+           #print("End",str(end_date))
+           a,b = str(end_date).split()
+           #start_date=str(datetime.strptime(str(end_date), "%Y-%m-%d"))
+           set_date(a)
          
             
 
@@ -76,17 +79,26 @@ def set_date(start_date):
             index.append(list_date.index(i))
             #print("Index",list_date.index(i))
     
+    for i in newList:
+        a,b = str(i).split()
+        if (start_date in a):
+            new_list_date.append(i)
+            
+            
     first=index[0]
     last=index[-1]
     set_data(first,last)       
-    del index[:]
+
     
 def set_data(first,last):       
     for k in range(first,last+1):
         #print("Data",list_data[k])         
         new_list_data.append(list_data[k])
-
-    print(new_list_data)
+    
+    print(new_list_data)  
+    list_for_interval=[]
+    list_for_interval= list(zip(new_list_date, new_list_data))
+    print(list_of_interval)        
 
    
         
