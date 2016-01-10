@@ -98,7 +98,7 @@ def set_data(first,last):
     print(new_list_data)  
     list_for_interval=[]
     list_for_interval= list(zip(new_list_date, new_list_data))
-    print(list_for_interval)        
+    print(list_for_interval)            
 
    
         
