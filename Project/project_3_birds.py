@@ -49,7 +49,7 @@ def preprocessing():
 def compute_data():
     start_date = input('Start date [YYYY-MM-DD]: ')
     days = input('Number of days: ')
-    interval = input('Interval [0=mins, 1=hours, 2=days, 3=weeks]: ')
+    interval = input('Interval [0=2 mins, 1=hours, 2=days, 3=weeks]: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
 
     collect_plot_dates(start_date)  # collect dates/data for start date
@@ -60,26 +60,30 @@ def compute_data():
             a, b = str(end_date).split()
             collect_plot_dates(a)
 
-    print(plot_data)
-    print(plot_dates)
+    # print(plot_data)
+    # print(plot_dates)
+
+    print(len(plot_data))  # 2015-01-26 has 711 rows of data (this is verified)
+    print(len(modify_interval(interval)))  # Results in 23 hours.. (23.7)
+    print(modify_interval(interval))
 
 
 def collect_plot_dates(start_date):
     first = 0
     last = 0
-    index = []
+    temp_list = []
 
     for i in list_dates:
         if (start_date in str(i)):
-            index.append(list_dates.index(i))
+            temp_list.append(list_dates.index(i))
 
     for i in converted_dates:
         a, b = str(i).split()
         if (start_date in a):
             plot_dates.append(i)
 
-    first = index[0]
-    last = index[-1]
+    first = temp_list[0]
+    last = temp_list[-1]
     collect_plot_data(first, last)
 
 
@@ -87,8 +91,32 @@ def collect_plot_data(first, last):
     for k in range(first, last+1):
         plot_data.append(list_data[k])
 
-    list_for_interval = []
-    list_for_interval = list(zip(plot_dates, plot_data))
+    # list_for_interval = []
+    # list_for_interval = list(zip(plot_dates, plot_data))
+
+
+def modify_interval(interval):
+    interval_list = []
+    sum_value = 0
+    index = 0
+
+    if (interval == '0'):
+        print("Interval is se to every 2 minute")  # use data as it is
+    elif (interval == '1'):
+        for data in plot_data:
+            sum_value = sum_value + int(data)
+            index = index + 1
+            if (index is 30):
+                interval_list.append(sum_value)
+                index = 0
+    elif (interval == '2'):
+        print("2")
+    elif (interval == '3'):
+        print("3")
+    else:
+        print("Not a valid interval")
+  
+    return interval_list
 
 # --------------------- TASK 5 ------------------------------------------------
 
