@@ -1,126 +1,112 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan  6 17:04:28 2016
-@author: Andreas Drotth, Sebastian Olsson, TODO: FILL IN REST
+@author: Andreas Drotth, Sebastian Olsson, TODO: FILL IN OTHERS
 """
 from scipy import *
 from pylab import *
-from datetime import datetime 
-from datetime import timedelta 
+from datetime import datetime
+from datetime import timedelta
 import pytz
 
-list_date = []
-newList = []
+list_dates = []
 list_data = []
-new_list_data=[]
-new_list_date=[]
+converted_dates = []
+plot_dates = []
+plot_data = []
+
 # --------------------- TASK 1 ------------------------------------------------
 
 
 def read_file():
-    file = open("test.txt", "r")  
-    
+    file = open("birds.txt", "r")
 
-    for line in file:       
+    for line in file:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
-        a, b, c = line.split()  
-        list_date.append(datetime.strptime(a + " " + b, frmt))
+        a, b, c = line.split()
+        list_dates.append(datetime.strptime(a + " " + b, frmt))
         list_data.append(c)
-
-    return list_date
 
 # --------------------- TASK 2 ------------------------------------------------
 
 
-def convert_local_timezone(list_date):
-   
+def convert_local_timezone():
 
-    for date in list_date:  
-        local_tz = pytz.timezone('Europe/Stockholm')  
+    for date in list_dates:
+        local_tz = pytz.timezone('Europe/Stockholm')
         local_time = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
-        newList.append(local_time)  
-
-    return newList
+        converted_dates.append(local_time)
 
 # --------------------- TASK 3 ------------------------------------------------
 
 
 def preprocessing():
-    print("preproc")
+    print("Preprocessing data")
 
 # --------------------- TASK 4 ------------------------------------------------
 
 
-def compute_data():  
+def compute_data():
     start_date = input('Start date [YYYY-MM-DD]: ')
     days = input('Number of days: ')
     interval = input('Interval [0=mins, 1=hours, 2=days, 3=weeks]: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
-    
-    
-    set_date(start_date)
-    
-    if int(days)>1:
-       for t in range(1,int(days)):
-           end_date = date_1 + timedelta(int(t)) 
-           #print("End",str(end_date))
-           a,b = str(end_date).split()
-           #start_date=str(datetime.strptime(str(end_date), "%Y-%m-%d"))
-           set_date(a)
-         
-            
 
-def set_date(start_date):    
-    first=0
-    last=0
-    index =[]
-    for i in list_date:
+    collect_plot_dates(start_date)  # collect dates/data for start date
+
+    if int(days) > 1:  # Repeat collection for each plus day separatly
+        for t in range(1, int(days)):
+            end_date = date_1 + timedelta(int(t))
+            a, b = str(end_date).split()
+            collect_plot_dates(a)
+
+    print(plot_data)
+    print(plot_dates)
+
+
+def collect_plot_dates(start_date):
+    first = 0
+    last = 0
+    index = []
+
+    for i in list_dates:
         if (start_date in str(i)):
-            index.append(list_date.index(i))
-            #print("Index",list_date.index(i))
-    
-    for i in newList:
-        a,b = str(i).split()
+            index.append(list_dates.index(i))
+
+    for i in converted_dates:
+        a, b = str(i).split()
         if (start_date in a):
-            new_list_date.append(i)
-            
-            
-    first=index[0]
-    last=index[-1]
-    set_data(first,last)       
+            plot_dates.append(i)
 
-    
-def set_data(first,last):       
-    for k in range(first,last+1):
-        #print("Data",list_data[k])         
-        new_list_data.append(list_data[k])
-    
-    print(new_list_data)  
-    list_for_interval=[]
-    list_for_interval= list(zip(new_list_date, new_list_data))
-    print(list_for_interval)            
+    first = index[0]
+    last = index[-1]
+    collect_plot_data(first, last)
 
-   
-        
+
+def collect_plot_data(first, last):
+    for k in range(first, last+1):
+        plot_data.append(list_data[k])
+
+    list_for_interval = []
+    list_for_interval = list(zip(plot_dates, plot_data))
+
 # --------------------- TASK 5 ------------------------------------------------
 
 
-def plot_data():
-    print("plot")
-    
-    
-# --------------------- TASK 6 ------------------------------------------------
-def visualize():
-    print("Visualize")
+def plot_graph():
+    print("Plot data")
 
-    
+# --------------------- TASK 6 ------------------------------------------------
+
+
+def day_night_cycle():
+    print("Visualize day and night cycle")
+
+
 if __name__ == '__main__':
-    listG = read_file()
-    newList = convert_local_timezone(listG)
-    preprocessing()
-    #for obj in newList:
-    #    print(obj)
-        
-    compute_data()   
-    plot_data()
-    visualize()
+    read_file()
+    convert_local_timezone()
+    # preprocessing()
+    compute_data()
+    # plot_graph()
+    # day_night_cycle()
