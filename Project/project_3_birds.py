@@ -19,7 +19,7 @@ plot_data = []
 
 
 def read_file():
-    file = open("birds.txt", "r")
+    file = open("birds_26.txt", "r")
 
     for line in file:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
@@ -63,9 +63,10 @@ def compute_data():
     # print(plot_data)
     # print(plot_dates)
 
-    print(len(plot_data))  # 2015-01-26 has 711 rows of data (this is verified)
-    print(len(modify_interval(interval)))  # Results in 23 hours.. (23.7)
-    print(modify_interval(interval))
+    print(len(list_data))  # 2015-01-26 has 720 rows of data (this is verified)
+    print(len(plot_data))  # 2015-01-26 has 720 rows of data (this is verified)
+    print(len(modify_interval(interval)))  # Results in 24 hours
+    print(modify_interval(interval))  # Gives the data in hours
 
 
 def collect_plot_dates(start_date):
@@ -106,13 +107,23 @@ def modify_interval(interval):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
-            if (index is 30):
+            if (index is 30):  # Number of values in an hour
                 interval_list.append(sum_value)
                 index = 0
     elif (interval == '2'):
-        print("2")
+            for data in plot_data:
+            sum_value = sum_value + int(data)
+            index = index + 1
+            if (index is 720):  # Number of values in a day
+                interval_list.append(sum_value)
+                index = 0
     elif (interval == '3'):
-        print("3")
+            for data in plot_data:
+            sum_value = sum_value + int(data)
+            index = index + 1
+            if (index is 5040):  # Number of values in a week
+                interval_list.append(sum_value)
+                index = 0
     else:
         print("Not a valid interval")
   
