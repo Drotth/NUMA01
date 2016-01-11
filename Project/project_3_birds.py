@@ -54,7 +54,7 @@ def compute_data():
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
-    if int(days) > 1:  # Repeat collection for each plus day separatly
+    if   int(days) > 1:  # Repeat collection for each plus day separatly
         for t in range(1, int(days)):
             end_date = date_1 + timedelta(int(t))
             a, b = str(end_date).split()
@@ -111,14 +111,14 @@ def modify_interval(interval):
                 interval_list.append(sum_value)
                 index = 0
     elif (interval == '2'):
-            for data in plot_data:
+        for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index is 720):  # Number of values in a day
                 interval_list.append(sum_value)
                 index = 0
     elif (interval == '3'):
-            for data in plot_data:
+        for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index is 5040):  # Number of values in a week
