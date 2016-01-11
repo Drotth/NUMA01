@@ -54,7 +54,7 @@ def compute_data():
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
-    if   int(days) > 1:  # Repeat collection for each plus day separatly
+    if int(days) > 1:  # Repeat collection for each plus day separatly
         for t in range(1, int(days)):
             end_date = date_1 + timedelta(int(t))
             a, b = str(end_date).split()
@@ -63,10 +63,10 @@ def compute_data():
     # print(plot_data)
     # print(plot_dates)
 
-    print(len(list_data))  # 2015-01-26 has 720 rows of data (this is verified)
-    print(len(plot_data))  # 2015-01-26 has 720 rows of data (this is verified)
+    # print(len(list_data))  # 2015-01-26 has 720 rows of data
+    # print(len(plot_data))  # 2015-01-26 has 720 rows of data
     print(len(modify_interval(interval)))  # Results in 24 hours
-    print(modify_interval(interval))  # Gives the data in hours
+    # print(modify_interval(interval))  # Gives the data in hours
 
 
 def collect_plot_dates(start_date):
@@ -92,41 +92,38 @@ def collect_plot_data(first, last):
     for k in range(first, last+1):
         plot_data.append(list_data[k])
 
-    # list_for_interval = []
-    # list_for_interval = list(zip(plot_dates, plot_data))
-
 
 def modify_interval(interval):
     interval_list = []
     sum_value = 0
     index = 0
 
-    if (interval == '0'):
-        print("Interval is se to every 2 minute")  # use data as it is
-    elif (interval == '1'):
+    if (interval is '0'):
+        interval_list = plot_data
+    elif (interval is '1'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index is 30):  # Number of values in an hour
                 interval_list.append(sum_value)
                 index = 0
-    elif (interval == '2'):
+    elif (interval is '2'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
-            if (index is 720):  # Number of values in a day
+            if (index == 720):  # Number of values in a day
                 interval_list.append(sum_value)
                 index = 0
-    elif (interval == '3'):
+    elif (interval is '3'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
-            if (index is 5040):  # Number of values in a week
+            if (index == 5040):  # Number of values in a week
                 interval_list.append(sum_value)
                 index = 0
     else:
         print("Not a valid interval")
-  
+
     return interval_list
 
 # --------------------- TASK 5 ------------------------------------------------
