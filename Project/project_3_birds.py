@@ -19,7 +19,7 @@ plot_data = []
 
 
 def read_file():
-    file = open("birds_26.txt", "r")
+    file = open("birds.txt", "r")
 
     for line in file:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
@@ -64,7 +64,8 @@ def compute_data():
     # print(plot_dates)
 
     # print(len(list_data))  # 2015-01-26 has 720 rows of data
-    # print(len(plot_data))  # 2015-01-26 has 720 rows of data
+    print(len(plot_data))  # 2015-01-26 has 720 rows of data
+    print(len(plot_dates))  # 2015-01-26 has 720 rows of data
     print(len(modify_interval(interval)))  # Results in 24 hours
     # print(modify_interval(interval))  # Gives the data in hours
 
@@ -72,19 +73,19 @@ def compute_data():
 def collect_plot_dates(start_date):
     first = 0
     last = 0
-    temp_list = []
+    index_list = []
 
     for i in list_dates:
         if (start_date in str(i)):
-            temp_list.append(list_dates.index(i))
+            index_list.append(list_dates.index(i))
 
-    for i in converted_dates:
+    for i in list_dates:
         a, b = str(i).split()
         if (start_date in a):
             plot_dates.append(i)
 
-    first = temp_list[0]
-    last = temp_list[-1]
+    first = index_list[0]
+    last = index_list[-1]
     collect_plot_data(first, last)
 
 
@@ -97,16 +98,29 @@ def modify_interval(interval):
     interval_list = []
     sum_value = 0
     index = 0
+    current_hour = 0
 
     if (interval is '0'):
         interval_list = plot_data
     elif (interval is '1'):
         for data in plot_data:
-            sum_value = sum_value + int(data)
-            index = index + 1
-            if (index is 30):  # Number of values in an hour
+            if (plot_dates[index].hour > current_hour):
                 interval_list.append(sum_value)
-                index = 0
+                sum_value = 0
+                sum_value = sum_value + int(data)
+                current_hour = current_hour + 1
+            elif (plot_dates[index].hour < current_hour):
+                interval_list.append(sum_value)
+                sum_value = 0
+                sum_value = sum_value + int(data)
+                current_hour = 0
+            else:
+                sum_value = sum_value + int(data)
+                
+            index = index + 1
+            
+        interval_list.append(sum_value)
+                
     elif (interval is '2'):
         for data in plot_data:
             sum_value = sum_value + int(data)
@@ -114,6 +128,7 @@ def modify_interval(interval):
             if (index == 720):  # Number of values in a day
                 interval_list.append(sum_value)
                 index = 0
+                sum_value = 0
     elif (interval is '3'):
         for data in plot_data:
             sum_value = sum_value + int(data)
@@ -121,6 +136,7 @@ def modify_interval(interval):
             if (index == 5040):  # Number of values in a week
                 interval_list.append(sum_value)
                 index = 0
+                sum_value = 0
     else:
         print("Not a valid interval")
 
