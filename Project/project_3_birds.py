@@ -36,7 +36,6 @@ def compute_data():
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
 
     collect_plot_dates(start_date)  # collect dates/data for start date
-    # collect_plot_dates2(start_date, days)
 
     if int(days) > 1:  # Repeat collection for each plus day separatly
         for t in range(1, int(days)):
@@ -49,45 +48,6 @@ def compute_data():
     graph_dates, graph_data = graph_values(diff_array)
 
     return graph_dates, graph_data
-
-
-def collect_plot_dates2(start_date, days):
-    first = 0
-    last = 0
-    index_list = []
-    date_found = False
-    
-    date_1 = datetime.strptime(start_date, "%Y-%m-%d")
-    end_date = date_1 + timedelta(int(days))
-
-#    for i in list_dates:
-#        if (start_date in str(i)):
-#            index_list.append(list_dates.index(i))
-
-    for i in list_dates:
-        a, b = str(i).split()
-        
-        if (date_found == False and start_date in a):
-            # print("FOUND IT AT INDEX:", list_dates.index(i))
-            date_found = True
-            plot_dates.append(i)
-            first = list_dates.index(i)
-        elif(date_found == True):
-            # print("APPENDING INDEX:", list_dates.index(i))
-            plot_dates.append(i)
-            if (end_date.strftime('%Y-%m-%d') in a):
-                # print("STOPPING AT INDEX:", list_dates.index(i))
-                last = list_dates.index(i)
-                break
-        last = list_dates.index(i)
-
-    # first = index_list[0]
-    # last = index_list[-1]
-
-    print("first is:", first)
-    print("last is:", last)    
-    
-    collect_plot_data(first, last)
 
 
 def collect_plot_dates(start_date):
@@ -122,10 +82,6 @@ def graph_values(diff_array):
     current_hour = plot_dates[0].hour
 
     graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
-
-    print("Length of diff_array", len(diff_array))
-    print("Length of plot_dates", len(plot_dates))
-    print("Length of plot_data", len(plot_data))
 
     for data in diff_array:
         if (plot_dates[index].hour > current_hour):
