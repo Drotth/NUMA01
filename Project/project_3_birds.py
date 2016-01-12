@@ -98,23 +98,23 @@ def modify_interval(interval):
     sum_value = 0
     index = 0
 
-    if (interval is '0'):
+    if (interval == '0'):
         interval_list = plot_data
-    elif (interval is '1'):
+    elif (interval == '1'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index is 30):  # Number of values in an hour
                 interval_list.append(sum_value)
                 index = 0
-    elif (interval is '2'):
+    elif (interval == '2'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index == 720):  # Number of values in a day
                 interval_list.append(sum_value)
                 index = 0
-    elif (interval is '3'):
+    elif (interval == '3'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
