@@ -8,24 +8,13 @@ from pylab import *
 from datetime import datetime
 from datetime import timedelta
 import pytz
+from preprocess import preprocessing
 
 list_dates = []
 list_data = []
 converted_dates = []
 plot_dates = []
 plot_data = []
-
-# --------------------- TASK 1 ------------------------------------------------
-
-
-def read_file():
-    file = open("birds.txt", "r")
-
-    for line in file:
-        frmt = '%Y-%m-%d %H:%M:%S.%f'
-        a, b, c = line.split()
-        list_dates.append(datetime.strptime(a + " " + b, frmt))
-        list_data.append(c)
 
 # --------------------- TASK 2 ------------------------------------------------
 
@@ -37,62 +26,6 @@ def convert_local_timezone():
         local_time = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
         converted_dates.append(local_time)
 
-# --------------------- TASK 3 ------------------------------------------------
-
-
-def preprocessing():
-    file = open("birds.txt", "r")  # Öppnar filen birds och läser den.
-    listG = []  # Skapar en tom lista
-    for line in file:
-        listG.append(re.findall(r"[\w']+", line))
-
-    listindex = []
-    for a in range(len(listG)):
-        listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
-        listG[a] = [int(i) for i in listG[a]]
-        diff = listG[a][7] - listG[a-1][7]
-
-        if a > 0:
-            if diff < 0:
-                listindex.append(a)
-    for i in range(len(listindex)):
-        del listG[listindex[i]]  # we do this to delete the unwanted lines
-
-    difflist = []
-    dateslist = []
-
-    for a in range(len(listG)):
-        listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
-        listG[a] = [int(i) for i in listG[a]]
-        # datelist is a list of the dates as integers
-        dateslist.append(listG[a][0:6])
-        diff = listG[a][7]-listG[a-1][7]
-        difflist.append(diff)
-
-    for t in range(len(difflist)):
-        if difflist[t] < 0:
-            difflist[t] = 0  # changes difference to be 0 when there is a reset
-        if difflist[t] > 8:
-            difflist[t] = 8
-
-    A = 0
-    datalist = []
-
-    for a in range(len(difflist)):
-        A = difflist[a] + A
-        datalist.append(A)
-
-    finaldatalist = [k+70 for k in datalist]  # list comprehention
-    print(finaldatalist[1470])
-    print(listG[1470])
-
-    finaldateslist = []
-    for object in listG:
-        frmt = '%Y-%m-%d %H:%M:%S.%f'
-        a, b, c = line.split()
-        finaldateslist.append(datetime.strptime(a + " " + b, frmt))
-
-    print(finaldateslist[1470])
 
 # --------------------- TASK 4 ------------------------------------------------
 
@@ -162,7 +95,7 @@ def graph_values(diff_array):
             sum_value = 0
             sum_value = sum_value + int(data)
             current_hour = 0
-            graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
+            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d'))
         else:
             sum_value = sum_value + int(data)
 
@@ -179,6 +112,7 @@ def plot_graph(graph_dates, graph_data):
     x_values = np.array(range(0, len(graph_dates)))
     y_values = np.array(graph_data)
     x_names = graph_dates
+    print(x_names)
 
     ax = plt.subplot(111)
     plt.xticks(rotation=90)  # Roterar det som står på x-axeln
@@ -193,11 +127,9 @@ def plot_graph(graph_dates, graph_data):
 def day_night_cycle():
     print("Visualize day and night cycle")
 
-
 if __name__ == '__main__':
-    # read_file()
-    # convert_local_timezone()
-    preprocessing()
-    # graph_dates, graph_data = compute_data()
-    # plot_graph(graph_dates, graph_data)
+    list_dates, list_data = preprocessing("birds.txt")
+    convert_local_timezone()
+    graph_dates, graph_data = compute_data()
+    plot_graph(graph_dates, graph_data)
     # day_night_cycle()
