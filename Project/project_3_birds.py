@@ -14,12 +14,13 @@ list_data = []
 converted_dates = []
 plot_dates = []
 plot_data = []
+array1 = []
 
 # --------------------- TASK 1 ------------------------------------------------
 
 
 def read_file():
-    file = open("birds.txt", "r")
+    file = open("birds_26.txt", "r")
 
     for line in file:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
@@ -60,14 +61,15 @@ def compute_data():
             a, b = str(end_date).split()
             collect_plot_dates(a)
 
-    # print(plot_data)
-    # print(plot_dates)
+    array1 = np.array(plot_data)
+    diff_array = np.diff(array1)
+    diff_array.insert(0, 0)
 
     # print(len(list_data))  # 2015-01-26 has 720 rows of data
     print(len(plot_data))  # 2015-01-26 has 720 rows of data
     print(len(plot_dates))  # 2015-01-26 has 720 rows of data
-    print(len(modify_interval(interval)))  # Results in 24 hours
-    # print(modify_interval(interval))  # Gives the data in hours
+    print(len(modify_interval(interval, diff_array)))  # Results in 24 hours
+    print(modify_interval(interval, diff_array))  # Gives the data in hours
 
 
 def collect_plot_dates(start_date):
@@ -91,19 +93,20 @@ def collect_plot_dates(start_date):
 
 def collect_plot_data(first, last):
     for k in range(first, last+1):
-        plot_data.append(list_data[k])
+        plot_data.append(int(list_data[k]))
 
 
-def modify_interval(interval):
+def modify_interval(interval, diff_array):
     interval_list = []
     sum_value = 0
     index = 0
     current_hour = 0
 
-    if (interval is '0'):
+    if (interval == '2mins'):
         interval_list = plot_data
-    elif (interval is '1'):
-        for data in plot_data:
+    elif (interval == 'hours'):
+        for data in diff_array:
+            print(index)
             if (plot_dates[index].hour > current_hour):
                 interval_list.append(sum_value)
                 sum_value = 0
@@ -119,9 +122,8 @@ def modify_interval(interval):
                 
             index = index + 1
             
-        interval_list.append(sum_value)
-                
-    elif (interval is '2'):
+        interval_list.append(sum_value)                
+    elif (interval == 'days'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
@@ -129,7 +131,7 @@ def modify_interval(interval):
                 interval_list.append(sum_value)
                 index = 0
                 sum_value = 0
-    elif (interval is '3'):
+    elif (interval == 'weeks'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
