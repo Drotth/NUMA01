@@ -16,18 +16,6 @@ converted_dates = []
 plot_dates = []
 plot_data = []
 
-# --------------------- TASK 1 ------------------------------------------------
-
-
-def read_file():
-    file = open("birds.txt", "r")
-
-    for line in file:
-        frmt = '%Y-%m-%d %H:%M:%S.%f'
-        a, b, c = line.split()
-        list_dates.append(datetime.strptime(a + " " + b, frmt))
-        list_data.append(c)
-
 # --------------------- TASK 2 ------------------------------------------------
 
 
@@ -96,6 +84,7 @@ def graph_values(diff_array):
     graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
 
     for data in diff_array:
+        # print("index is:", index, "data is",int(data))
         if (plot_dates[index].hour > current_hour):
             graph_data.append(sum_value)
             sum_value = 0
@@ -140,19 +129,8 @@ def day_night_cycle():
 
 
 if __name__ == '__main__':
-    # read_file()
-    # convert_local_timezone()
-    list_dates, list_data = preprocessing()
+    list_dates, list_data = preprocessing("birds.txt")
     convert_local_timezone()
-    # graph_dates, graph_data = compute_data()
-    # plot_graph(graph_dates, graph_data)
+    graph_dates, graph_data = compute_data()
+    plot_graph(graph_dates, graph_data)
     # day_night_cycle()
-    
-    print(list_dates[0])
-    print(list_dates[4000])
-    print(list_dates[8000])
-    print(list_dates[30000])
-    print(converted_dates[0])
-    print(converted_dates[4000])
-    print(converted_dates[8000])
-    print(converted_dates[30000])

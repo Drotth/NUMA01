@@ -8,8 +8,11 @@ from pylab import *
 from datetime import datetime
 import re
 
-def preprocessing():
-    file = open("birds.txt", "r")  # Öppnar filen birds och läser den.
+# --------------------- TASK 1 & 3---------------------------------------------
+
+
+def preprocessing(file_url):
+    file = open(file_url, "r")  # Öppnar filen birds och läser den.
     listG = []  # Skapar en tom lista
     for line in file:
         listG.append(re.findall(r"[\w']+", line))
@@ -53,9 +56,9 @@ def preprocessing():
     finaldatalist = [k+70 for k in datalist]  # list comprehention
 
     finaldateslist = []
-    for object in listG:
-        frmt = '%Y-%m-%d %H:%M:%S.%f'
-        a, b, c = line.split()
-        finaldateslist.append(datetime.strptime(a + " " + b, frmt))
+    for obj in listG:
+        del obj[7]
+        new_date = datetime(*map(int, obj))
+        finaldateslist.append(new_date)
     
     return finaldateslist, finaldatalist
