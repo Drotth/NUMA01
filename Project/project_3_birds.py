@@ -14,13 +14,12 @@ list_data = []
 converted_dates = []
 plot_dates = []
 plot_data = []
-array1 = []
 
 # --------------------- TASK 1 ------------------------------------------------
 
 
 def read_file():
-    file = open("birds_26.txt", "r")
+    file = open("birds.txt", "r")
 
     for line in file:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
@@ -50,7 +49,7 @@ def preprocessing():
 def compute_data():
     start_date = input('Start date [YYYY-MM-DD]: ')
     days = input('Number of days: ')
-    interval = input('Interval [0=2 mins, 1=hours, 2=days, 3=weeks]: ')
+    interval = input('Interval [2mins, hours, days, weeks]: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
 
     collect_plot_dates(start_date)  # collect dates/data for start date
@@ -63,13 +62,17 @@ def compute_data():
 
     array1 = np.array(plot_data)
     diff_array = np.diff(array1)
-    diff_array.insert(0, 0)
+    # diff_array.insert(0, 0)
 
     # print(len(list_data))  # 2015-01-26 has 720 rows of data
-    print(len(plot_data))  # 2015-01-26 has 720 rows of data
-    print(len(plot_dates))  # 2015-01-26 has 720 rows of data
-    print(len(modify_interval(interval, diff_array)))  # Results in 24 hours
-    print(modify_interval(interval, diff_array))  # Gives the data in hours
+    # print(len(plot_data))  # 2015-01-26 has 720 rows of data
+    # print(len(plot_dates))  # 2015-01-26 has 720 rows of data
+    # print(len(graph_values(interval, diff_array)))  # Results in 24 hours
+    # print(graph_values(interval, diff_array))  # Gives the data in hours
+
+    graph_dates, graph_data = graph_values(interval, diff_array)
+
+    return graph_dates, graph_data
 
 
 def collect_plot_dates(start_date):
@@ -96,59 +99,77 @@ def collect_plot_data(first, last):
         plot_data.append(int(list_data[k]))
 
 
-def modify_interval(interval, diff_array):
-    interval_list = []
+def graph_values(interval, diff_array):
+    graph_data = []
+    graph_dates = []
     sum_value = 0
     index = 0
-    current_hour = 0
+    current_hour = plot_dates[0].hour
 
     if (interval == '2mins'):
-        interval_list = plot_data
+        graph_data = plot_data
+
     elif (interval == 'hours'):
+        graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
+        # graph_dates.append('hej')
+
         for data in diff_array:
-            print(index)
             if (plot_dates[index].hour > current_hour):
-                interval_list.append(sum_value)
+                graph_data.append(sum_value)
                 sum_value = 0
                 sum_value = sum_value + int(data)
                 current_hour = current_hour + 1
+                graph_dates.append(str(current_hour))
             elif (plot_dates[index].hour < current_hour):
-                interval_list.append(sum_value)
+                graph_data.append(sum_value)
                 sum_value = 0
                 sum_value = sum_value + int(data)
                 current_hour = 0
+                graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
             else:
                 sum_value = sum_value + int(data)
-                
+
             index = index + 1
-            
-        interval_list.append(sum_value)                
+
+        graph_data.append(sum_value)
+
     elif (interval == 'days'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index == 720):  # Number of values in a day
-                interval_list.append(sum_value)
+                graph_data.append(sum_value)
                 index = 0
                 sum_value = 0
+
     elif (interval == 'weeks'):
         for data in plot_data:
             sum_value = sum_value + int(data)
             index = index + 1
             if (index == 5040):  # Number of values in a week
-                interval_list.append(sum_value)
+                graph_data.append(sum_value)
                 index = 0
                 sum_value = 0
     else:
         print("Not a valid interval")
 
-    return interval_list
+    return graph_dates, graph_data
 
 # --------------------- TASK 5 ------------------------------------------------
 
 
-def plot_graph():
-    print("Plot data")
+def plot_graph(graph_dates, graph_data):
+    x_values = np.array(range(0, len(graph_dates)))
+    y_values = np.array(graph_data)
+    x_names = graph_dates
+
+    ax = plt.subplot(111)
+    plt.xticks(rotation=90)  # roterar det som står på x-axeln
+    plt.xticks(x_values, x_names)
+    barWidth = 1  # bredd på staplarna
+    ax.bar(x_values, y_values, width=barWidth, align='center')
+    #ax.xaxis_time()
+    plt.show()
 
 # --------------------- TASK 6 ------------------------------------------------
 
@@ -161,6 +182,10 @@ if __name__ == '__main__':
     read_file()
     convert_local_timezone()
     # preprocessing()
-    compute_data()
-    # plot_graph()
+    graph_dates, graph_data = compute_data()
+    print(graph_dates)
+    print(graph_data)
+    print(len(graph_dates))
+    print(len(graph_data))
+    plot_graph(graph_dates, graph_data)
     # day_night_cycle()
