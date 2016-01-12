@@ -112,7 +112,6 @@ def plot_graph(graph_dates, graph_data):
     x_values = np.array(range(0, len(graph_dates)))
     y_values = np.array(graph_data)
     x_names = graph_dates
-    print(x_names)
 
     ax = plt.subplot(111)
     plt.xticks(rotation=90)  # Roterar det som står på x-axeln
