@@ -42,31 +42,31 @@ def convert_local_timezone():
 
 def preprocessing():
     file = open("birds.txt", "r")  # Öppnar filen birds och läser den.
-    list_dates = []  # Skapar en tom lista
+    listG = []  # Skapar en tom lista
     for line in file:
-        list_dates.append(re.findall(r"[\w']+", line))
+        listG.append(re.findall(r"[\w']+", line))
 
     listindex = []
-    for a in range(len(list_dates)):
-        list_dates[a-1] = [int(i) for i in list_dates[a-1]]  # makes them into integers
-        list_dates[a] = [int(i) for i in list_dates[a]]
-        diff = list_dates[a][7] - list_dates[a-1][7]
+    for a in range(len(listG)):
+        listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
+        listG[a] = [int(i) for i in listG[a]]
+        diff = listG[a][7] - listG[a-1][7]
 
         if a > 0:
             if diff < 0:
                 listindex.append(a)
     for i in range(len(listindex)):
-        del list_dates[listindex[i]]  # we do this to delete the unwanted lines
+        del listG[listindex[i]]  # we do this to delete the unwanted lines
 
     difflist = []
     dateslist = []
 
-    for a in range(len(list_dates)):
-        list_dates[a-1] = [int(i) for i in list_dates[a-1]]  # makes them into integers
-        list_dates[a] = [int(i) for i in list_dates[a]]
+    for a in range(len(listG)):
+        listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
+        listG[a] = [int(i) for i in listG[a]]
         # datelist is a list of the dates as integers
-        dateslist.append(list_dates[a][0:6])
-        diff = list_dates[a][7]-list_dates[a-1][7]
+        dateslist.append(listG[a][0:6])
+        diff = listG[a][7]-listG[a-1][7]
         difflist.append(diff)
 
     for t in range(len(difflist)):
@@ -84,10 +84,10 @@ def preprocessing():
 
     finaldatalist = [k+70 for k in datalist]  # list comprehention
     print(finaldatalist[1470])
-    print(list_dates[1470])
+    print(listG[1470])
 
     finaldateslist = []
-    for object in list_dates:
+    for object in listG:
         frmt = '%Y-%m-%d %H:%M:%S.%f'
         a, b, c = line.split()
         finaldateslist.append(datetime.strptime(a + " " + b, frmt))
@@ -195,9 +195,9 @@ def day_night_cycle():
 
 
 if __name__ == '__main__':
-    read_file()
-    convert_local_timezone()
-    # preprocessing()
-    graph_dates, graph_data = compute_data()
-    plot_graph(graph_dates, graph_data)
+    # read_file()
+    # convert_local_timezone()
+    preprocessing()
+    # graph_dates, graph_data = compute_data()
+    # plot_graph(graph_dates, graph_data)
     # day_night_cycle()
