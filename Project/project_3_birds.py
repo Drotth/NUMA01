@@ -41,7 +41,58 @@ def convert_local_timezone():
 
 
 def preprocessing():
-    print("Preprocessing data")
+    file = open("birds.txt", "r")  # Öppnar filen birds och läser den.
+    list_dates = []  # Skapar en tom lista
+    for line in file:
+        list_dates.append(re.findall(r"[\w']+", line))
+
+    listindex = []
+    for a in range(len(list_dates)):
+        list_dates[a-1] = [int(i) for i in list_dates[a-1]]  # makes them into integers
+        list_dates[a] = [int(i) for i in list_dates[a]]
+        diff = list_dates[a][7] - list_dates[a-1][7]
+
+        if a > 0:
+            if diff < 0:
+                listindex.append(a)
+    for i in range(len(listindex)):
+        del list_dates[listindex[i]]  # we do this to delete the unwanted lines
+
+    difflist = []
+    dateslist = []
+
+    for a in range(len(list_dates)):
+        list_dates[a-1] = [int(i) for i in list_dates[a-1]]  # makes them into integers
+        list_dates[a] = [int(i) for i in list_dates[a]]
+        # datelist is a list of the dates as integers
+        dateslist.append(list_dates[a][0:6])
+        diff = list_dates[a][7]-list_dates[a-1][7]
+        difflist.append(diff)
+
+    for t in range(len(difflist)):
+        if difflist[t] < 0:
+            difflist[t] = 0  # changes difference to be 0 when there is a reset
+        if difflist[t] > 8:
+            difflist[t] = 8
+
+    A = 0
+    datalist = []
+
+    for a in range(len(difflist)):
+        A = difflist[a] + A
+        datalist.append(A)
+
+    finaldatalist = [k+70 for k in datalist]  # list comprehention
+    print(finaldatalist[1470])
+    print(list_dates[1470])
+
+    finaldateslist = []
+    for object in list_dates:
+        frmt = '%Y-%m-%d %H:%M:%S.%f'
+        a, b, c = line.split()
+        finaldateslist.append(datetime.strptime(a + " " + b, frmt))
+
+    print(finaldateslist[1470])
 
 # --------------------- TASK 4 ------------------------------------------------
 
@@ -49,7 +100,6 @@ def preprocessing():
 def compute_data():
     start_date = input('Start date [YYYY-MM-DD]: ')
     days = input('Number of days: ')
-    interval = input('Interval [2mins, hours, days, weeks]: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
 
     collect_plot_dates(start_date)  # collect dates/data for start date
@@ -62,15 +112,7 @@ def compute_data():
 
     array1 = np.array(plot_data)
     diff_array = np.diff(array1)
-    # diff_array.insert(0, 0)
-
-    # print(len(list_data))  # 2015-01-26 has 720 rows of data
-    # print(len(plot_data))  # 2015-01-26 has 720 rows of data
-    # print(len(plot_dates))  # 2015-01-26 has 720 rows of data
-    # print(len(graph_values(interval, diff_array)))  # Results in 24 hours
-    # print(graph_values(interval, diff_array))  # Gives the data in hours
-
-    graph_dates, graph_data = graph_values(interval, diff_array)
+    graph_dates, graph_data = graph_values(diff_array)
 
     return graph_dates, graph_data
 
@@ -99,59 +141,34 @@ def collect_plot_data(first, last):
         plot_data.append(int(list_data[k]))
 
 
-def graph_values(interval, diff_array):
+def graph_values(diff_array):
     graph_data = []
     graph_dates = []
     sum_value = 0
     index = 0
     current_hour = plot_dates[0].hour
 
-    if (interval == '2mins'):
-        graph_data = plot_data
+    graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
 
-    elif (interval == 'hours'):
-        graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
-        # graph_dates.append('hej')
-
-        for data in diff_array:
-            if (plot_dates[index].hour > current_hour):
-                graph_data.append(sum_value)
-                sum_value = 0
-                sum_value = sum_value + int(data)
-                current_hour = current_hour + 1
-                graph_dates.append(str(current_hour))
-            elif (plot_dates[index].hour < current_hour):
-                graph_data.append(sum_value)
-                sum_value = 0
-                sum_value = sum_value + int(data)
-                current_hour = 0
-                graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
-            else:
-                sum_value = sum_value + int(data)
-
-            index = index + 1
-
-        graph_data.append(sum_value)
-
-    elif (interval == 'days'):
-        for data in plot_data:
+    for data in diff_array:
+        if (plot_dates[index].hour > current_hour):
+            graph_data.append(sum_value)
+            sum_value = 0
             sum_value = sum_value + int(data)
-            index = index + 1
-            if (index == 720):  # Number of values in a day
-                graph_data.append(sum_value)
-                index = 0
-                sum_value = 0
-
-    elif (interval == 'weeks'):
-        for data in plot_data:
+            current_hour = current_hour + 1
+            graph_dates.append(str(current_hour))
+        elif (plot_dates[index].hour < current_hour):
+            graph_data.append(sum_value)
+            sum_value = 0
             sum_value = sum_value + int(data)
-            index = index + 1
-            if (index == 5040):  # Number of values in a week
-                graph_data.append(sum_value)
-                index = 0
-                sum_value = 0
-    else:
-        print("Not a valid interval")
+            current_hour = 0
+            graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
+        else:
+            sum_value = sum_value + int(data)
+
+        index = index + 1
+
+    graph_data.append(sum_value)
 
     return graph_dates, graph_data
 
@@ -164,11 +181,10 @@ def plot_graph(graph_dates, graph_data):
     x_names = graph_dates
 
     ax = plt.subplot(111)
-    plt.xticks(rotation=90)  # roterar det som står på x-axeln
+    plt.xticks(rotation=90)  # Roterar det som står på x-axeln
     plt.xticks(x_values, x_names)
-    barWidth = 1  # bredd på staplarna
+    barWidth = 1  # Bredd på staplarna
     ax.bar(x_values, y_values, width=barWidth, align='center')
-    #ax.xaxis_time()
     plt.show()
 
 # --------------------- TASK 6 ------------------------------------------------
@@ -183,9 +199,5 @@ if __name__ == '__main__':
     convert_local_timezone()
     # preprocessing()
     graph_dates, graph_data = compute_data()
-    print(graph_dates)
-    print(graph_data)
-    print(len(graph_dates))
-    print(len(graph_data))
     plot_graph(graph_dates, graph_data)
     # day_night_cycle()
