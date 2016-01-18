@@ -34,9 +34,12 @@ def convert_local_timezone():
 
 
 def compute_data():
-    start_date = '2015-01-26' #input('Start date [YYYY-MM-DD]: ')
-    days = '1' #input('Number of days: ')
+    start_date = input('Start date [YYYY-MM-DD]: ')
+    days = input('Number of days: ')
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
+    
+    plot_dates.clear()
+    plot_data.clear()
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
@@ -139,14 +142,14 @@ def plot_graph(graph_dates, graph_data, sun_indexes):
     x_names = graph_dates
     
     
-    x2_values = np.array(range(0, len(graph_dates)))
-    y2_raw = [0,0,0,0,0,0,0,0,12,12,12,12,12,12,12,12,0,0,0,0,0,0,0,0]
-    y2_values = np.array(y2_raw)
+    #x2_values = np.array(range(0, len(graph_dates)))
+    #y2_raw = [0,0,0,0,0,0,0,0,12,12,12,12,12,12,12,12,0,0,0,0,0,0,0,0]
+    #y2_values = np.array(y2_raw)
     
     plt.xticks(rotation=90)  # Roterar det som står på x-axeln
     plt.xticks(x_values, x_names)
     barWidth = 1  # Bredd på staplarna
-    plt.bar(x2_values, y2_values, width=barWidth, align='center', color='y')
+    #plt.bar(x2_values, y2_values, width=barWidth, align='center', color='y')
     plt.bar(x_values, y_values, width=barWidth, align='center')
     plt.show()
 
@@ -164,6 +167,9 @@ def day_night_cycle():
 if __name__ == '__main__':
     list_dates, list_data = preprocessing("birds.txt")
     convert_local_timezone()
-    graph_dates, graph_data, sun_indexes = compute_data()
-    plot_graph(graph_dates, graph_data, sun_indexes)
-    day_night_cycle()
+    continue_loop = 'y'
+    while (continue_loop is 'y'):
+        graph_dates, graph_data, sun_indexes = compute_data()
+        plot_graph(graph_dates, graph_data, sun_indexes)
+        continue_loop = input('Do you want to plot something more? [y/n]')
+        # day_night_cycle()
