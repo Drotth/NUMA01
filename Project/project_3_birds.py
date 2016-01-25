@@ -31,8 +31,22 @@ def convert_local_timezone():
 
 
 def compute_data():
-    start_date = input('Start date [YYYY-MM-DD]: ')
-    days = input('Number of days: ')
+    #start_date = input('Start date [YYYY-MM-DD]: ')
+    #days = input('Number of days: ')   
+    try:
+        start_date = input('Start date [YYYY-MM-DD]: ')
+        datelist = start_date.split('-')
+        datetime.datetime(year=int(datelist[0]), month=int(datelist[1]),day=int(datelist[2]))
+    except:
+        print("You have to write input on the form YYYY-MM-DD")
+        
+    try:
+        days = int(input('Number of days: '))
+    except ValueError:
+        print("You have to write an integer")
+    
+        
+        
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
 
     collect_plot_dates(start_date)  # collect dates/data for start date
