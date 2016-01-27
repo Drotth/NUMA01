@@ -135,8 +135,12 @@ def plot_graph(graph_dates, graph_data):
     ax = plt.subplot(111)
     plt.xticks(rotation=90)  # Roterar det som står på x-axeln
     plt.xticks(x_values, x_names)
-    barWidth = 1  # Bredd på staplarna
+    barWidth = 0.25  # Bredd på staplarna
     ax.bar(x_values, y_values, width=barWidth, align='center')
+    
+    #plt.savefig('bird_movements.png') #Sparar plotten som en png fil, lättare att kolla på
+    plt.title("Nesting box activities")
+    plt.ylabel("In/out movements per hour")
     plt.show()
 
 # --------------------- TASK 6 ------------------------------------------------
