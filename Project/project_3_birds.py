@@ -141,6 +141,10 @@ def plot_graph(graph_dates, graph_data):
     #plt.savefig('bird_movements.png') #Sparar plotten som en png fil, lättare att kolla på
     plt.title("Nesting box activities")
     plt.ylabel("In/out movements per hour")
+    save = input('Press s to save graph as png file or enter to skip: ')
+    if(save=='s'):
+        plt.savefig('bird_movements.png',bbox_inches='tight') #Sparar plotten som en png fil, lättare att kolla på
+        print("File saved as bird_movements.png in your working directory")
     plt.show()
 
 # --------------------- TASK 6 ------------------------------------------------
