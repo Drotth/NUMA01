@@ -77,10 +77,6 @@ def collect_plot_dates(start_date):
     for i in list_dates:
         if (start_date in str(i)):
             index_list.append(list_dates.index(i))
-
-    for i in list_dates:
-        a, b = str(i).split()
-        if (start_date in a):
             plot_dates.append(i)
 
     first = index_list[0]
