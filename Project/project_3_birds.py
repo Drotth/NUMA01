@@ -53,6 +53,23 @@ def compute_data():
             print("You have to write an integer")
      
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
+    """
+    #week interval
+    #try except must be fixed for this one
+    #and we need to have user dialog so user can
+    #choose between day interval or week interval
+    #this code works quite good for plot one week
+    #to run this seperatly you need to comment the second
+    #while loop at the beginning of this function
+        
+    nbrofweeks = int(input('Number of weeks: '))
+    w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
+        
+    delta =  w[-1]-w[0]
+    days=delta.days
+    print(delta.days) 
+    """
+
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
@@ -153,8 +170,10 @@ def plot_graph(graph_dates, graph_data):
     end=24
     
     hours=int((x_values[-1]-x_values[0]).total_seconds()/3600)+1
-    if(hours>96):
+    if(hours>96 and hours<120):
         space=5
+    elif(hours>120):
+        space=10
     
     xaxis.set_minor_locator(dates.HourLocator(byhour=range(start,end,space)))
     xaxis.set_minor_formatter(dates.DateFormatter('%H'))#minor locator timme
