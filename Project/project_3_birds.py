@@ -9,6 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 from preprocess import preprocessing
+import matplotlib.dates as dates
 
 list_dates = []
 list_data = []
@@ -151,7 +152,7 @@ def plot_graph(graph_dates, graph_data):
     fig = plt.figure()
     
     ax = fig.add_subplot(111)
-    barWidth = 1.0/(len(x) + 2)
+    barWidth = 1.0/(len(x_values) + 2)
     ax.bar(x_values, y_values, width=barWidth , color='green', align='center')
     
     plt.gcf().autofmt_xdate()
