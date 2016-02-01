@@ -33,8 +33,8 @@ def convert_local_timezone():
 
 
 def compute_data():
-    first_date = list_dates[0]
-    last_date = list_dates[-1]
+    first_date = list_dates[0].date()
+    last_date = list_dates[-1].date()
 
     checkstartdate = True
     while(checkstartdate):
@@ -45,9 +45,10 @@ def compute_data():
                      month=int(datelist[1]),
                      day=int(datelist[2]))
             date_0 = datetime.strptime(start_date, "%Y-%m-%d")
+            date_0 = date_0.date()
             checkstartdate = False
 
-            if(date_0 > last_date or date_0 < first_date):
+            if (date_0 > last_date or date_0 < first_date):
                 print("The entered date is outside of the data range!")
                 checkstartdate = True
 
