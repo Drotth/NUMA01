@@ -33,24 +33,26 @@ def convert_local_timezone():
 
 
 def compute_data():
-    #start_date = input('Start date [YYYY-MM-DD]: ')
-    #days = input('Number of days: ')
+    # start_date = input('Start date [YYYY-MM-DD]: ')
+    # days = input('Number of days: ')
 
-    checkstartdate=True
+    checkstartdate = True
     while(checkstartdate):
         try:
             start_date = input('Start date [YYYY-MM-DD]: ')
             datelist = start_date.split('-')
-            datetime(year=int(datelist[0]), month=int(datelist[1]),day=int(datelist[2]))
-            checkstartdate=False
+            datetime(year=int(datelist[0]),
+                     month=int(datelist[1]),
+                     day=int(datelist[2]))
+            checkstartdate = False
         except:
             print("You have to write input on the form YYYY-MM-DD")
 
-    checkinterval=True
+    checkinterval = True
     while(checkinterval):
         try:
             days = int(input('Number of days: '))
-            checkinterval=False
+            checkinterval = False
         except ValueError:
             print("You have to write an integer")
 
@@ -117,7 +119,7 @@ def graph_values(diff_array):
     index = 0
     current_hour = plot_dates[0].hour
     sun_indexes = []
-    
+
     city_name = 'Stockholm'
     a = Astral()
     a.solar_depression = 'civil'
@@ -147,19 +149,19 @@ def graph_values(diff_array):
             sun = city.sun(plot_dates[index], local=True)
         else:
             sum_value = sum_value + int(data)
-            
-        if (plot_dates[index].hour == sun['sunrise'].hour and sunrise_found == False):
+
+        if (plot_dates[index].hour is sun['sunrise'].hour and
+                sunrise_found is False):
             sun_indexes.append(current_hour)
             sunrise_found = True
-        if (plot_dates[index].hour == sun['sunset'].hour and sunset_found == False):
+        if (plot_dates[index].hour is sun['sunset'].hour and
+                sunset_found is False):
             sun_indexes.append(current_hour)
             sunset_found = True
 
         index = index + 1
 
     graph_data.append(sum_value)
-    
-    print(sun_indexes)
 
     return graph_dates, graph_data, sun_indexes
 
@@ -167,18 +169,17 @@ def graph_values(diff_array):
 
 
 def plot_graph(graph_dates, graph_data):
-    x_values=[]
+    x_values = []
     for i in graph_dates:
         x_values.append(datetime.strptime(i, '%Y-%m-%d %H:%M:%S'))
 
     y_values = np.array(graph_data)
 
-
     fig = plt.figure()
 
     ax = fig.add_subplot(111)
     barWidth = 1.0/(len(x_values) + 2)
-    ax.bar(x_values, y_values, width=barWidth , color='green', align='center')
+    ax.bar(x_values, y_values, width=barWidth, color='green', align='center')
 
     plt.gcf().autofmt_xdate()
     plt.xticks(rotation=45)
@@ -186,24 +187,23 @@ def plot_graph(graph_dates, graph_data):
 
     ax = plt.gca()
 
-
     xaxis = ax.get_xaxis()
     xaxis.set_major_locator(dates.DayLocator())
     xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d'))
 
-    space=3
-    start=2
-    end=24
+    space = 3
+    start = 2
+    end = 24
 
-    hours=int((x_values[-1]-x_values[0]).total_seconds()/3600)+1
-    if(hours>96 and hours<120):
-        space=5
-    elif(hours>120):
-        space=10
+    hours = int((x_values[-1]-x_values[0]).total_seconds()/3600)+1
+    if(hours > 96 and hours < 120):
+        space = 5
+    elif(hours > 120):
+        space = 10
 
-    xaxis.set_minor_locator(dates.HourLocator(byhour=range(start,end,space)))
-    xaxis.set_minor_formatter(dates.DateFormatter('%H'))#minor locator timme
-    xaxis.set_tick_params(which='major', pad=18) #sätter ner datumen med 18 steg
+    xaxis.set_minor_locator(dates.HourLocator(byhour=range(start, end, space)))
+    xaxis.set_minor_formatter(dates.DateFormatter('%H'))  # minor locator timme
+    xaxis.set_tick_params(which='major', pad=18)  # sätter ner datumen 18 steg
 
     plt.title("Nesting box activities")
     plt.ylabel("In/out movements per hour")
@@ -216,11 +216,13 @@ def plot_graph(graph_dates, graph_data):
 def day_night_cycle():
     print("Visualize day and night cycle")
 
-# --------------------- TASK 7 ------------------------------------------------
+# --------------------- TASK 7 (EXTRA) ----------------------------------------
+
+
 def save_plot():
     save = input('Press s to save graph as png file or enter to skip: ')
-    if(save=='s'):
-        plt.savefig('bird_movements.png',bbox_inches='tight')
+    if(save == 's'):
+        plt.savefig('bird_movements.png', bbox_inches='tight')
         print("File saved as bird_movements.png in your working directory")
 
 if __name__ == '__main__':
@@ -230,8 +232,8 @@ if __name__ == '__main__':
     while (continue_loop is 'y'):
         graph_dates, graph_data, sun_indexes = compute_data()
         plot_graph(graph_dates, graph_data)
+        # day_night_cycle()
         continue_loop = input('Do you want to plot something more? [y/n]')
         if (continue_loop is not 'y' and continue_loop is not 'n'):
             print("Since you apparently can't read, I'll shut it down for you.")
             continue_loop = 'n'
-        # day_night_cycle()
