@@ -83,14 +83,29 @@ def compute_data():
 
     plot_dates.clear()
     plot_data.clear()
-
+    
+    start_time = datetime.now()
+    
+    # One-loop version
+    """
+    end_date = date_1 + timedelta(days)
+    end_date = end_date.strftime('%Y-%m-%d')
+    collect_all(start_date, end_date)
+    """
+    
+    # Several-loops version
+    
     collect_plot_dates(start_date)  # collect dates/data for start date
-
     if int(days) > 1:  # Repeat collection for each plus day separatly
         for t in range(1, int(days)):
             end_date = date_1 + timedelta(int(t))
             a, b = str(end_date).split()
             collect_plot_dates(a)
+    
+    
+    stop_time = datetime.now()
+    diff_time = stop_time - start_time
+    print(diff_time.microseconds)
 
     array1 = np.array(plot_data)
     diff_array = np.diff(array1)
@@ -118,6 +133,22 @@ def collect_plot_data(first, last):
     for k in range(first, last+1):
         plot_data.append(int(list_data[k]))
 
+def collect_all(start_date, end_date):
+    start_found = False
+    collect_index = 0
+    
+    for datum in list_dates:
+        if (start_found is False and start_date in str(datum)):
+            start_found = True
+            plot_dates.append(datum)
+            plot_data.append(int(list_data[collect_index]))
+        elif (start_found is True):
+            if (end_date in str(datum)):
+                break
+            else:
+                plot_dates.append(datum)
+                plot_data.append(int(list_data[collect_index]))
+        collect_index = collect_index + 1
 
 def graph_values(diff_array):
     graph_data = []
