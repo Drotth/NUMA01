@@ -9,6 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 from preprocess import preprocessing
+import matplotlib.dates as dates
 
 list_dates = []
 list_data = []
@@ -31,9 +32,45 @@ def convert_local_timezone():
 
 
 def compute_data():
-    start_date = input('Start date [YYYY-MM-DD]: ')
-    days = input('Number of days: ')
+    #start_date = input('Start date [YYYY-MM-DD]: ')
+    #days = input('Number of days: ')  
+    
+    checkstartdate=True
+    while(checkstartdate):
+        try:
+            start_date = input('Start date [YYYY-MM-DD]: ')
+            datelist = start_date.split('-')
+            datetime(year=int(datelist[0]), month=int(datelist[1]),day=int(datelist[2]))
+            checkstartdate=False
+        except:
+            print("You have to write input on the form YYYY-MM-DD")      
+    
+    checkinterval=True        
+    while(checkinterval):
+        try:
+            days = int(input('Number of days: '))
+            checkinterval=False
+        except ValueError:
+            print("You have to write an integer")
+     
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
+    """
+    #week interval
+    #try except must be fixed for this one
+    #and we need to have user dialog so user can
+    #choose between day interval or week interval
+    #this code works quite good for plot one week
+    #to run this seperatly you need to comment the second
+    #while loop at the beginning of this function
+        
+    nbrofweeks = int(input('Number of weeks: '))
+    w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
+        
+    delta =  w[-1]-w[0]
+    days=delta.days
+    print(delta.days) 
+    """
+
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
@@ -58,10 +95,6 @@ def collect_plot_dates(start_date):
     for i in list_dates:
         if (start_date in str(i)):
             index_list.append(list_dates.index(i))
-
-    for i in list_dates:
-        a, b = str(i).split()
-        if (start_date in a):
             plot_dates.append(i)
 
     first = index_list[0]
@@ -80,44 +113,76 @@ def graph_values(diff_array):
     sum_value = 0
     index = 0
     current_hour = plot_dates[0].hour
-
-    graph_dates.append(plot_dates[0].strftime('%Y-%m-%d'))
-
+    
+    graph_dates.append(plot_dates[0].strftime('%Y-%m-%d %H:%M:%S'))
+    
     for data in diff_array:
         if (plot_dates[index].hour > current_hour):
             graph_data.append(sum_value)
             sum_value = 0
             sum_value = sum_value + int(data)
             current_hour = current_hour + 1
-            graph_dates.append(str(current_hour))
+            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
         elif (plot_dates[index].hour < current_hour):
             graph_data.append(sum_value)
             sum_value = 0
             sum_value = sum_value + int(data)
             current_hour = 0
-            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d'))
+            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
         else:
             sum_value = sum_value + int(data)
-
+        
         index = index + 1
-
+    
     graph_data.append(sum_value)
 
-    return graph_dates, graph_data
+return graph_dates, graph_data
 
 # --------------------- TASK 5 ------------------------------------------------
 
 
 def plot_graph(graph_dates, graph_data):
-    x_values = np.array(range(0, len(graph_dates)))
+    x_values=[]
+    for i in graph_dates:
+        x_values.append(datetime.strptime(i, '%Y-%m-%d %H:%M:%S'))
+    
     y_values = np.array(graph_data)
-    x_names = graph_dates
 
-    ax = plt.subplot(111)
-    plt.xticks(rotation=90)  # Roterar det som står på x-axeln
-    plt.xticks(x_values, x_names)
-    barWidth = 1  # Bredd på staplarna
-    ax.bar(x_values, y_values, width=barWidth, align='center')
+
+    fig = plt.figure()
+    
+    ax = fig.add_subplot(111)
+    barWidth = 1.0/(len(x_values) + 2)
+    ax.bar(x_values, y_values, width=barWidth , color='green', align='center')
+    
+    plt.gcf().autofmt_xdate()
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    
+    ax = plt.gca()
+    
+    
+    xaxis = ax.get_xaxis()
+    xaxis.set_major_locator(dates.DayLocator())
+    xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d'))
+
+    space=3
+    start=2
+    end=24
+    
+    hours=int((x_values[-1]-x_values[0]).total_seconds()/3600)+1
+    if(hours>96 and hours<120):
+        space=5
+    elif(hours>120):
+        space=10
+    
+    xaxis.set_minor_locator(dates.HourLocator(byhour=range(start,end,space)))
+    xaxis.set_minor_formatter(dates.DateFormatter('%H'))#minor locator timme
+    xaxis.set_tick_params(which='major', pad=18) #sätter ner datumen med 18 steg
+    
+    plt.title("Nesting box activities")
+    plt.ylabel("In/out movements per hour")
+    save_plot()
     plt.show()
 
 # --------------------- TASK 6 ------------------------------------------------
@@ -125,6 +190,13 @@ def plot_graph(graph_dates, graph_data):
 
 def day_night_cycle():
     print("Visualize day and night cycle")
+
+# --------------------- TASK 7 ------------------------------------------------
+def save_plot():
+    save = input('Press s to save graph as png file or enter to skip: ')
+    if(save=='s'):
+        plt.savefig('bird_movements.png',bbox_inches='tight')
+        print("File saved as bird_movements.png in your working directory")
 
 if __name__ == '__main__':
     list_dates, list_data = preprocessing("birds.txt")
