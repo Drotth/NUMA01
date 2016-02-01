@@ -8,6 +8,7 @@ from pylab import *
 from datetime import datetime
 from datetime import timedelta
 import pytz
+from astral import Astral
 from preprocess import preprocessing
 import matplotlib.dates as dates
 
@@ -33,8 +34,8 @@ def convert_local_timezone():
 
 def compute_data():
     #start_date = input('Start date [YYYY-MM-DD]: ')
-    #days = input('Number of days: ')  
-    
+    #days = input('Number of days: ')
+
     checkstartdate=True
     while(checkstartdate):
         try:
@@ -43,16 +44,16 @@ def compute_data():
             datetime(year=int(datelist[0]), month=int(datelist[1]),day=int(datelist[2]))
             checkstartdate=False
         except:
-            print("You have to write input on the form YYYY-MM-DD")      
-    
-    checkinterval=True        
+            print("You have to write input on the form YYYY-MM-DD")
+
+    checkinterval=True
     while(checkinterval):
         try:
             days = int(input('Number of days: '))
             checkinterval=False
         except ValueError:
             print("You have to write an integer")
-     
+
     date_1 = datetime.strptime(start_date, "%Y-%m-%d")
     """
     #week interval
@@ -62,15 +63,17 @@ def compute_data():
     #this code works quite good for plot one week
     #to run this seperatly you need to comment the second
     #while loop at the beginning of this function
-        
+
     nbrofweeks = int(input('Number of weeks: '))
     w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
-        
+
     delta =  w[-1]-w[0]
     days=delta.days
-    print(delta.days) 
+    print(delta.days)
     """
 
+    plot_dates.clear()
+    plot_data.clear()
 
     collect_plot_dates(start_date)  # collect dates/data for start date
 
@@ -82,9 +85,9 @@ def compute_data():
 
     array1 = np.array(plot_data)
     diff_array = np.diff(array1)
-    graph_dates, graph_data = graph_values(diff_array)
+    graph_dates, graph_data, sun_indexes = graph_values(diff_array)
 
-    return graph_dates, graph_data
+    return graph_dates, graph_data, sun_indexes
 
 
 def collect_plot_dates(start_date):
@@ -113,9 +116,19 @@ def graph_values(diff_array):
     sum_value = 0
     index = 0
     current_hour = plot_dates[0].hour
+    sun_indexes = []
     
+    city_name = 'Stockholm'
+    a = Astral()
+    a.solar_depression = 'civil'
+    city = a[city_name]
+
+    sunrise_found = False
+    sunset_found = False
+    sun = city.sun(plot_dates[0], local=True)
+
     graph_dates.append(plot_dates[0].strftime('%Y-%m-%d %H:%M:%S'))
-    
+
     for data in diff_array:
         if (plot_dates[index].hour > current_hour):
             graph_data.append(sum_value)
@@ -129,14 +142,26 @@ def graph_values(diff_array):
             sum_value = sum_value + int(data)
             current_hour = 0
             graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
+            sunrise_found = False
+            sunset_found = False
+            sun = city.sun(plot_dates[index], local=True)
         else:
             sum_value = sum_value + int(data)
-        
-        index = index + 1
-    
-    graph_data.append(sum_value)
+            
+        if (plot_dates[index].hour == sun['sunrise'].hour and sunrise_found == False):
+            sun_indexes.append(current_hour)
+            sunrise_found = True
+        if (plot_dates[index].hour == sun['sunset'].hour and sunset_found == False):
+            sun_indexes.append(current_hour)
+            sunset_found = True
 
-return graph_dates, graph_data
+        index = index + 1
+
+    graph_data.append(sum_value)
+    
+    print(sun_indexes)
+
+    return graph_dates, graph_data, sun_indexes
 
 # --------------------- TASK 5 ------------------------------------------------
 
@@ -145,23 +170,23 @@ def plot_graph(graph_dates, graph_data):
     x_values=[]
     for i in graph_dates:
         x_values.append(datetime.strptime(i, '%Y-%m-%d %H:%M:%S'))
-    
+
     y_values = np.array(graph_data)
 
 
     fig = plt.figure()
-    
+
     ax = fig.add_subplot(111)
     barWidth = 1.0/(len(x_values) + 2)
     ax.bar(x_values, y_values, width=barWidth , color='green', align='center')
-    
+
     plt.gcf().autofmt_xdate()
     plt.xticks(rotation=45)
     plt.tight_layout()
-    
+
     ax = plt.gca()
-    
-    
+
+
     xaxis = ax.get_xaxis()
     xaxis.set_major_locator(dates.DayLocator())
     xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d'))
@@ -169,17 +194,17 @@ def plot_graph(graph_dates, graph_data):
     space=3
     start=2
     end=24
-    
+
     hours=int((x_values[-1]-x_values[0]).total_seconds()/3600)+1
     if(hours>96 and hours<120):
         space=5
     elif(hours>120):
         space=10
-    
+
     xaxis.set_minor_locator(dates.HourLocator(byhour=range(start,end,space)))
     xaxis.set_minor_formatter(dates.DateFormatter('%H'))#minor locator timme
     xaxis.set_tick_params(which='major', pad=18) #sätter ner datumen med 18 steg
-    
+
     plt.title("Nesting box activities")
     plt.ylabel("In/out movements per hour")
     save_plot()
@@ -201,6 +226,9 @@ def save_plot():
 if __name__ == '__main__':
     list_dates, list_data = preprocessing("birds.txt")
     convert_local_timezone()
-    graph_dates, graph_data = compute_data()
-    plot_graph(graph_dates, graph_data)
-    # day_night_cycle()
+    continue_loop = 'y'
+    while (continue_loop is 'y'):
+        graph_dates, graph_data, sun_indexes = compute_data()
+        plot_graph(graph_dates, graph_data)
+        continue_loop = input('Do you want to plot something more? [y/n]')
+        # day_night_cycle()
