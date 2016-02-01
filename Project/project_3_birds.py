@@ -33,8 +33,8 @@ def convert_local_timezone():
 
 
 def compute_data():
-    # start_date = input('Start date [YYYY-MM-DD]: ')
-    # days = input('Number of days: ')
+    first_date = list_dates[0]
+    last_date = list_dates[-1]
 
     checkstartdate = True
     while(checkstartdate):
@@ -44,7 +44,13 @@ def compute_data():
             datetime(year=int(datelist[0]),
                      month=int(datelist[1]),
                      day=int(datelist[2]))
+            date_0 = datetime.strptime(start_date, "%Y-%m-%d")
             checkstartdate = False
+
+            if(date_0 > last_date or date_0 < first_date):
+                print("The entered date is outside of the data range!")
+                checkstartdate = True
+
         except:
             print("You have to write input on the form YYYY-MM-DD")
 
@@ -235,5 +241,6 @@ if __name__ == '__main__':
         # day_night_cycle()
         continue_loop = input('Do you want to plot something more? [y/n]')
         if (continue_loop is not 'y' and continue_loop is not 'n'):
-            print("Since you apparently can't read, I'll shut it down for you.")
+            print(
+                "Since you apparently can't read, I'll shut it down for you.")
             continue_loop = 'n'
