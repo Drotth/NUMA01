@@ -46,6 +46,7 @@ def compute_data():
                      day=int(datelist[2]))
             date_0 = datetime.strptime(start_date, "%Y-%m-%d")
             date_0 = date_0.date()
+            date_1 = datetime.strptime(start_date, "%Y-%m-%d")
             checkstartdate = False
 
             if (date_0 > last_date or date_0 < first_date):
@@ -58,28 +59,22 @@ def compute_data():
     checkinterval = True
     while(checkinterval):
         try:
-            days = int(input('Number of days: '))
-            checkinterval = False
+            interval=int(input('Enter 1 for day interval and 2 for week interval: '))
+            if(interval==1):
+                days = int(input('Number of days: '))
+                checkinterval=False
+            elif(interval==2):
+                nbrofweeks = int(input('Number of weeks: '))
+                w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
+                delta =  w[-1]-w[0]
+                days=delta.days
+                checkinterval=False
+            else:
+                print("You have to choose interval")
         except ValueError:
-            print("You have to write an integer")
+            print("You have to write an integer for the interval")
 
-    date_1 = datetime.strptime(start_date, "%Y-%m-%d")
-    """
-    #week interval
-    #try except must be fixed for this one
-    #and we need to have user dialog so user can
-    #choose between day interval or week interval
-    #this code works quite good for plot one week
-    #to run this seperatly you need to comment the second
-    #while loop at the beginning of this function
 
-    nbrofweeks = int(input('Number of weeks: '))
-    w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
-
-    delta =  w[-1]-w[0]
-    days=delta.days
-    print(delta.days)
-    """
 
     plot_dates.clear()
     plot_data.clear()
