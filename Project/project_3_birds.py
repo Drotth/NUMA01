@@ -231,4 +231,7 @@ if __name__ == '__main__':
         graph_dates, graph_data, sun_indexes = compute_data()
         plot_graph(graph_dates, graph_data)
         continue_loop = input('Do you want to plot something more? [y/n]')
+        if (continue_loop is not 'y' and continue_loop is not 'n'):
+            print("Since you apparently can't read, I'll shut it down for you.")
+            continue_loop = 'n'
         # day_night_cycle()
