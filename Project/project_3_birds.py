@@ -205,17 +205,22 @@ def graph_values(diff_array):
 # --------------------- TASK 5 ------------------------------------------------
 
 
-def plot_graph(graph_dates, graph_data):
+def plot_graph(graph_dates, graph_data, sun_indexes):
     x_values = []
     for i in graph_dates:
         x_values.append(datetime.strptime(i, '%Y-%m-%d %H:%M:%S'))
 
     y_values = np.array(graph_data)
 
+    biggest = max(y_values)
+    sun_indexes = [k*biggest for k in sun_indexes]
+
     fig = plt.figure()
 
     ax = fig.add_subplot(111)
     barWidth = 1.0/(len(x_values) + 2)
+    ax.bar(x_values, sun_indexes, width=barWidth,
+           color='#ffcc66', align='center', edgecolor='None')
     ax.bar(x_values, y_values, width=barWidth, color='green', align='center')
 
     plt.gcf().autofmt_xdate()
@@ -268,7 +273,7 @@ if __name__ == '__main__':
     continue_loop = 'y'
     while (continue_loop is 'y'):
         graph_dates, graph_data, sun_indexes = compute_data()
-        plot_graph(graph_dates, graph_data)
+        plot_graph(graph_dates, graph_data, sun_indexes)
         # day_night_cycle()
         continue_loop = input('Do you want to plot something more? [y/n]')
         if (continue_loop is not 'y' and continue_loop is not 'n'):
