@@ -74,7 +74,7 @@ def compute_data():
     plot_dates.clear()
     plot_data.clear()
 
-    start_time = datetime.now()
+    # start_time = datetime.now()
 
     # One-loop version
     end_date = start_date + timedelta(days)
@@ -91,9 +91,9 @@ def compute_data():
             collect_plot_dates(a)
     """
 
-    stop_time = datetime.now()
-    diff_time = stop_time - start_time
-    print(diff_time.microseconds)
+    # stop_time = datetime.now()
+    # diff_time = stop_time - start_time
+    # print(diff_time.microseconds)
 
     array1 = np.array(plot_data)
     diff_array = np.diff(array1)
@@ -196,9 +196,6 @@ def graph_values(diff_array):
         index = index + 1
 
     graph_data.append(sum_value)
-
-    print(len(sun_indexes))
-    print(sun_indexes)
 
     return graph_dates, graph_data, sun_indexes
 
