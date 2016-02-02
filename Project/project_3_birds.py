@@ -156,8 +156,17 @@ def graph_values(diff_array):
     sunrise_found = False
     sunset_found = False
     sun = city.sun(plot_dates[0], local=True)
+    
+    print("Sunrise:" + str(sun['sunrise'].hour))
+    print("Sunset:" + str(sun['sunset'].hour))
 
     graph_dates.append(plot_dates[0].strftime('%Y-%m-%d %H:%M:%S'))
+    
+    if (plot_dates[index].hour >= sun['sunrise'].hour and
+        plot_dates[index].hour <= sun['sunset'].hour):
+        sun_indexes.append(str(current_hour) + "*")
+    else:
+        sun_indexes.append(str(current_hour))
 
     for data in diff_array:
         if (plot_dates[index].hour > current_hour):
@@ -165,19 +174,33 @@ def graph_values(diff_array):
             sum_value = 0
             sum_value = sum_value + int(data)
             current_hour = current_hour + 1
+            
+            if (plot_dates[index].hour >= sun['sunrise'].hour and
+                plot_dates[index].hour <= sun['sunset'].hour):
+                sun_indexes.append(str(current_hour) + "*")
+            else:
+                sun_indexes.append(str(current_hour))           
+            
             graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
         elif (plot_dates[index].hour < current_hour):
             graph_data.append(sum_value)
             sum_value = 0
             sum_value = sum_value + int(data)
-            current_hour = 0
-            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
-            sunrise_found = False
-            sunset_found = False
+            current_hour = plot_dates[index].hour
             sun = city.sun(plot_dates[index], local=True)
+            if (plot_dates[index].hour >= sun['sunrise'].hour and
+                plot_dates[index].hour <= sun['sunset'].hour):
+                sun_indexes.append(str(current_hour) + "*")
+            else:
+                sun_indexes.append(str(current_hour)) 
+            
+            graph_dates.append(plot_dates[index].strftime('%Y-%m-%d %H:%M:%S'))
+            # sunrise_found = False
+            # sunset_found = False
         else:
             sum_value = sum_value + int(data)
-
+            
+        """
         if (plot_dates[index].hour is sun['sunrise'].hour and
                 sunrise_found is False):
             sun_indexes.append(current_hour)
@@ -186,10 +209,14 @@ def graph_values(diff_array):
                 sunset_found is False):
             sun_indexes.append(current_hour)
             sunset_found = True
+        """
 
         index = index + 1
 
     graph_data.append(sum_value)
+    
+    print(len(sun_indexes))
+    print(sun_indexes)
 
     return graph_dates, graph_data, sun_indexes
 
