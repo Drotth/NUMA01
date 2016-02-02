@@ -29,7 +29,7 @@ def convert_local_timezone():
         converted_dates.append(local_time)
 
 
-# --------------------- TASK 4 ------------------------------------------------
+# --------------------- TASK 4 (& 6) ------------------------------------------
 
 
 def compute_data():
@@ -199,7 +199,7 @@ def graph_values(diff_array):
 
     return graph_dates, graph_data, sun_indexes
 
-# --------------------- TASK 5 ------------------------------------------------
+# --------------------- TASK 5 (& 6) ------------------------------------------
 
 
 def plot_graph(graph_dates, graph_data, sun_indexes):
@@ -248,12 +248,6 @@ def plot_graph(graph_dates, graph_data, sun_indexes):
     plt.ylabel("In/out movements per hour")
     save_plot()
     plt.show()
-
-# --------------------- TASK 6 ------------------------------------------------
-
-
-def day_night_cycle():
-    print("Visualize day and night cycle")
 
 # --------------------- TASK 7 (EXTRA) ----------------------------------------
 

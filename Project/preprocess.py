@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Tue Jan 12 22:11:37 2016
-@author: Andreas Drotth
+Created on Wed Jan 13 10:25:08 2016
+@author: henrikoldehed
 """
 from scipy import *
 from pylab import *
@@ -17,32 +16,31 @@ def preprocessing(file_url):
     for line in file:
         listG.append(re.findall(r"[\w']+", line))
 
-    listindex = []
+    listF = []
     for a in range(len(listG)):
         listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
         listG[a] = [int(i) for i in listG[a]]
         diff = listG[a][7] - listG[a-1][7]
 
         if a > 0:
-            if diff < 0:
-                listindex.append(a)
-    for i in range(len(listindex)):
-        del listG[listindex[i]]  # we do this to delete the unwanted lines
+            if  diff>=0 or listG[a][7] is 0:
+                listF.append(listG[a])
+
 
     difflist = []
     dateslist = []
 
-    for a in range(len(listG)):
-        listG[a-1] = [int(i) for i in listG[a-1]]  # makes them into integers
-        listG[a] = [int(i) for i in listG[a]]
-        # datelist is a list of the dates as integers
-        dateslist.append(listG[a][0:6])
-        diff = listG[a][7]-listG[a-1][7]
+    for a in range(len(listF)):
+        listF[a-1] = [int(i) for i in listF[a-1]] 
+        listF[a] = [int(i) for i in listF[a]]
+  
+        dateslist.append(listF[a][0:6])
+        diff = listF[a][7]-listF[a-1][7]
         difflist.append(diff)
 
     for t in range(len(difflist)):
         if difflist[t] < 0:
-            difflist[t] = 0  # changes difference to be 0 when there is a reset
+            difflist[t] = 0 
         if difflist[t] > 8:
             difflist[t] = 8
 
@@ -56,9 +54,13 @@ def preprocessing(file_url):
     finaldatalist = [k+70 for k in datalist]  # list comprehention
 
     finaldateslist = []
-    for obj in listG:
+    for obj in listF:
         del obj[7]
         new_date = datetime(*map(int, obj))
         finaldateslist.append(new_date)
-    
     return finaldateslist, finaldatalist
+#==============================================================================
+#==============================================================================
+# #     return finaldateslist, finaldatalist
+#==============================================================================
+#==============================================================================
