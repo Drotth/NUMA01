@@ -39,14 +39,9 @@ def compute_data():
     checkstartdate = True
     while(checkstartdate):
         try:
-            start_date = input('Start date [YYYY-MM-DD]: ')
-            datelist = start_date.split('-')
-            datetime(year=int(datelist[0]),
-                     month=int(datelist[1]),
-                     day=int(datelist[2]))
-            date_0 = datetime.strptime(start_date, "%Y-%m-%d")
-            date_0 = date_0.date()
-            date_1 = datetime.strptime(start_date, "%Y-%m-%d")
+            start_date = datetime.strptime(
+                            input('Start date [YYYY-MM-DD]: '), "%Y-%m-%d")
+            date_0 = start_date.date()
             checkstartdate = False
 
             if (date_0 > last_date or date_0 < first_date):
@@ -66,7 +61,8 @@ def compute_data():
                 checkinterval = False
             elif(interval == 2):
                 nbrofweeks = int(input('Number of weeks: '))
-                w = [date_1 + timedelta(weeks=i) for i in range(nbrofweeks+1)]
+                w = [start_date + timedelta(weeks=i) for i in range(
+                        nbrofweeks+1)]
                 delta = w[-1]-w[0]
                 days = delta.days
                 checkinterval = False
@@ -81,16 +77,16 @@ def compute_data():
     start_time = datetime.now()
 
     # One-loop version
-    end_date = date_1 + timedelta(days)
-    end_date = end_date.strftime('%Y-%m-%d')
+    end_date = start_date + timedelta(days)
     collect_all(start_date, end_date)
 
-    # Several-loops version
     """
-    collect_plot_dates(start_date)  # collect dates/data for start date
+    # Several-loops version
+    start_date2 = str(start_date.date())
+    collect_plot_dates(start_date2)  # collect dates/data for start date
     if int(days) > 1:  # Repeat collection for each plus day separatly
         for t in range(1, int(days)):
-            end_date = date_1 + timedelta(int(t))
+            end_date = start_date + timedelta(int(t))
             a, b = str(end_date).split()
             collect_plot_dates(a)
     """
@@ -131,12 +127,12 @@ def collect_all(start_date, end_date):
     collect_index = 0
 
     for datum in list_dates:
-        if (start_found is False and start_date in str(datum)):
+        if (start_found is False and start_date.date() == datum.date()):
             start_found = True
             plot_dates.append(datum)
             plot_data.append(int(list_data[collect_index]))
         elif (start_found is True):
-            if (end_date in str(datum)):
+            if (end_date.date() == datum.date()):
                 break
             else:
                 plot_dates.append(datum)
